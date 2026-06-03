@@ -5,7 +5,7 @@
 #include "TimerManager.h"
 #include "Blueprint/UserWidget.h"
 #include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
+#include "ShooterInputComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/Character.h"
 
@@ -31,17 +31,18 @@ void AShooterPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+	UShooterInputComponent* ShooterInputComponent = CastChecked<UShooterInputComponent>(InputComponent);
 
 	//Move
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AShooterPlayerController::Action_Move);
+	ShooterInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AShooterPlayerController::Action_Move);
 
 	//Look
-	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AShooterPlayerController::Action_Look);
+	ShooterInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AShooterPlayerController::Action_Look);
 
 	//Jump
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AShooterPlayerController::Action_Jump);
+	ShooterInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AShooterPlayerController::Action_Jump);
 
+	ShooterInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
 AShooterPlayerController::AShooterPlayerController()
@@ -91,6 +92,21 @@ void AShooterPlayerController::Action_Move(const FInputActionValue& Value)
 
 		ControlledPawn->AddMovementInput(RightDirection, MoveAxisVector.X);
 	}
+}
+
+void AShooterPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+}
+
+void AShooterPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Green, *InputTag.ToString());
+}
+
+void AShooterPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Blue, *InputTag.ToString());
 }
 
 void AShooterPlayerController::Action_Look(const FInputActionValue& Value)

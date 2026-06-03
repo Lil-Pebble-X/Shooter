@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "GameplayTagContainer.h"
 #include "ShooterPlayerController.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class UShooterInputConfig;
 
 /**
  * 
@@ -62,4 +64,12 @@ private:
 	void Action_Jump(const FInputActionValue& Value);
 
 	void Action_Move(const FInputActionValue& Value);
+
+	//InputTag Function
+	void AbilityInputTagPressed(FGameplayTag InputTag);
+	void AbilityInputTagReleased(FGameplayTag InputTag);
+	void AbilityInputTagHeld(FGameplayTag InputTag);
+
+	UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
+	TObjectPtr<UShooterInputConfig> InputConfig;
 };
