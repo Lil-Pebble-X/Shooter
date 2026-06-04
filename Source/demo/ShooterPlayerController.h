@@ -11,6 +11,7 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class UShooterInputConfig;
+class UBaseAbilitySystemComponent;
 
 /**
  * 
@@ -72,4 +73,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
 	TObjectPtr<UShooterInputConfig> InputConfig;
+
+	UPROPERTY()
+	TObjectPtr<UBaseAbilitySystemComponent> BaseAbilitySystemComponent;
+
+	UBaseAbilitySystemComponent* GetASC();
 };

@@ -3,11 +3,13 @@
 
 #include "ShooterPlayerController.h"
 #include "TimerManager.h"
+#include "BaseAbilitySystemcomponent.h"
 #include "Blueprint/UserWidget.h"
 #include "EnhancedInputSubsystems.h"
 #include "ShooterInputComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 void AShooterPlayerController::BeginPlay()
 {
@@ -94,21 +96,34 @@ void AShooterPlayerController::Action_Move(const FInputActionValue& Value)
 	}
 }
 
+//InputTag Function
 void AShooterPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+	//GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
 }
 
 void AShooterPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Green, *InputTag.ToString());
+	if (GetASC() == nullptr) return;
+	GetASC()->AbilityInputTagReleased(InputTag);
 }
 
 void AShooterPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Blue, *InputTag.ToString());
+	if (GetASC() == nullptr) return;
+	GetASC()->AbilityInputTagHeld(InputTag);
 }
 
+UBaseAbilitySystemComponent* AShooterPlayerController::GetASC()
+{
+	if (BaseAbilitySystemComponent == nullptr)
+	{
+		BaseAbilitySystemComponent =  Cast<UBaseAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>()));
+	}
+	return BaseAbilitySystemComponent;
+}
+
+//Look
 void AShooterPlayerController::Action_Look(const FInputActionValue& Value)
 {
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
