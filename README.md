@@ -15,7 +15,14 @@
 - - -
 <details>
 <summary>📂 点击展开 6月份的历史记录</summary>
-    
+
+### 2026-06-05
+
+- ✨ **新增**: 完善InputComponent，实现输入触发InputTag。
+- 📕 **小记**：
+
+- - -
+
 ### 2026-06-04 2:48
     
 - ✨ **新增**: 完成了InputComponent，实现输入绑定。
