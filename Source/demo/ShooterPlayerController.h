@@ -12,6 +12,7 @@ class UInputAction;
 struct FInputActionValue;
 class UShooterInputConfig;
 class UBaseAbilitySystemComponent;
+class IEnemyInterface;
 
 /**
  * 
@@ -24,6 +25,8 @@ class DEMO_API AShooterPlayerController : public APlayerController
 public:
 
 	AShooterPlayerController();
+
+	virtual void PlayerTick(float DeltaTime) override;
 
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
 
@@ -66,10 +69,16 @@ private:
 
 	void Action_Move(const FInputActionValue& Value);
 
+	void CursorTrace();
+	FHitResult CursorHit;
+	IEnemyInterface* ThisActor;
+	IEnemyInterface* LastActor;
+
 	//InputTag Function
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
 	void AbilityInputTagHeld(FGameplayTag InputTag);
+	bool bTargeting = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "EnhancedInput")
 	TObjectPtr<UShooterInputConfig> InputConfig;

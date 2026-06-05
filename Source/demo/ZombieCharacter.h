@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
 #include "GameFramework/Character.h"
+#include "EnemyInterface.h"
 #include "ZombieCharacter.generated.h"
 
 UCLASS()
-class DEMO_API AZombieCharacter : public ABaseCharacter
+class DEMO_API AZombieCharacter : public ABaseCharacter, public IEnemyInterface
 {
 	GENERATED_BODY()
 
@@ -17,6 +18,9 @@ public:
 	AZombieCharacter();
 
 	void Scratch();
+
+	virtual void HighlightActor() override;
+	virtual void UnHighlightActor() override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -8,11 +8,15 @@
 #include "BaseAbilitySystemComponent.h"
 #include "BaseAttributeSet.h"
 
+#include "demo.h"
+
 // Sets default values
 AZombieCharacter::AZombieCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
 	IsAttack = false;
 
@@ -33,6 +37,18 @@ void AZombieCharacter::Scratch()
 			IsAttack = false;
 		}, 1.0f, false);
 
+}
+
+void AZombieCharacter::HighlightActor()
+{
+	GetMesh()->SetRenderCustomDepth(true);	
+	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+
+}
+
+void AZombieCharacter::UnHighlightActor()
+{
+	GetMesh()->SetRenderCustomDepth(false);	
 }
 
  bool AZombieCharacter::FinishAttack() const

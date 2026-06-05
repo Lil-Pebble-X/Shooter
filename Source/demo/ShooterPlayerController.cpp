@@ -9,6 +9,8 @@
 #include "ShooterInputComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/Character.h"
+#include "EnemyInterface.h"
+#include "ShooterGameplayTags.h"
 #include "AbilitySystemBlueprintLibrary.h"
 
 void AShooterPlayerController::BeginPlay()
@@ -17,8 +19,10 @@ void AShooterPlayerController::BeginPlay()
 	check(ShooterContext);
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem);
-	Subsystem->AddMappingContext(ShooterContext, 0);
+	if (Subsystem)
+	{
+		Subsystem->AddMappingContext(ShooterContext, 0);
+	}
 
 	//bShowMouseCursor = true;
 	//DefaultMouseCursor = EMouseCursor::Default;
@@ -50,6 +54,14 @@ void AShooterPlayerController::SetupInputComponent()
 AShooterPlayerController::AShooterPlayerController()
 {
 	bReplicates = true;
+}
+
+void AShooterPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	CursorTrace();
+
 }
 
 void AShooterPlayerController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner)
@@ -96,10 +108,60 @@ void AShooterPlayerController::Action_Move(const FInputActionValue& Value)
 	}
 }
 
+void AShooterPlayerController::CursorTrace()
+{
+	if (GetWorld() == nullptr) return;
+
+	FVector2D ViewportSize(0.f, 0.f);
+	if (GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->GetViewportSize(ViewportSize);
+	}
+	else
+	{
+		return;
+	}
+
+	const FVector2D ScreenCenter(ViewportSize.X * 0.5f, ViewportSize.Y * 0.5f);
+	FVector WorldLocation;
+	FVector WorldDirection;
+	if (DeprojectScreenPositionToWorld(ScreenCenter.X, ScreenCenter.Y, WorldLocation, WorldDirection))
+	{
+		const float TraceDistance = 100000.f; 
+		const FVector TraceEnd = WorldLocation + (WorldDirection * TraceDistance);
+
+		FCollisionQueryParams QueryParams;
+		if (APawn* ShooterPawn = GetPawn())
+		{
+			QueryParams.AddIgnoredActor(ShooterPawn);
+		}
+
+		GetWorld()->LineTraceSingleByChannel(CursorHit, WorldLocation, TraceEnd, ECollisionChannel::ECC_Visibility, QueryParams);
+	}
+	else
+	{
+		CursorHit = FHitResult();
+	}
+
+	if (!CursorHit.bBlockingHit) return;
+
+	LastActor = ThisActor;
+	ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+
+	if (LastActor != ThisActor)
+	{
+		if (LastActor) LastActor->UnHighlightActor();
+		if (ThisActor) ThisActor->HighlightActor();
+	}
+	
+}
+
 //InputTag Function
 void AShooterPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	//GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+	if (InputTag.MatchesTagExact(FShooterGameplayTags::Get().InputTag_LMB))
+	{
+	}
 }
 
 void AShooterPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
@@ -110,7 +172,7 @@ void AShooterPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 void AShooterPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-	if (GetASC() == nullptr) return;
+	//if (!InputTag.MatchesTagExact(FShooterGameplayTags::Get().InputTag_LMB))
 	GetASC()->AbilityInputTagHeld(InputTag);
 }
 
