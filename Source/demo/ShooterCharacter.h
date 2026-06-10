@@ -35,31 +35,26 @@ public:
 
 	/** end Combat Interface */
 
+	virtual FVector GetCombatSocketLocation() override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AGun> GunClass;
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<USkeletalMeshComponent> Weapon;
 
-	UPROPERTY()
-	TObjectPtr<AGun> Gun;
-
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName WeaponTipSocketName;
 private:	
 	//input system
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
-	
-	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
-	TObjectPtr<UInputAction> ShootAction;
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	TObjectPtr<UInputAction> SprintAction;
 
 	//Input Action Function
-	void Action_Shoot(const FInputActionValue& Value);
-
 	void Action_Sprint(const FInputActionValue& Value);
 
 	virtual void InitAbilityActorInfo() override;

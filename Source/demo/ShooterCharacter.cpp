@@ -5,7 +5,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Gun.h"
 #include "ShooterPlayerState.h"
 #include "BaseAbilitySystemComponent.h"
 #include "AbilitySystemComponent.h"
@@ -31,6 +30,12 @@ AShooterCharacter::AShooterCharacter()
 	{
 		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
+
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
+	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
+	Weapon->SetVisibility(true);
+	Weapon->SetupAttachment(GetMesh(), FName("WeaponSocket"));
+	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned
@@ -38,11 +43,14 @@ void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
-
+	// if change weapon
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
-	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
-	Gun->SetOwner(this);
+}
+
+FVector AShooterCharacter::GetCombatSocketLocation()
+{
+	check(Weapon);
+	return Weapon->GetSocketLocation(WeaponTipSocketName);
 }
 
 void AShooterCharacter::Action_Sprint(const FInputActionValue& Value)
@@ -59,11 +67,6 @@ void AShooterCharacter::Action_Sprint(const FInputActionValue& Value)
 			GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 		}
 	}
-}
-
-void AShooterCharacter::Action_Shoot(const FInputActionValue& Value)
-{
-	Gun->PullTrigger();
 }
 
 void AShooterCharacter::PossessedBy(AController* NewController)
@@ -136,8 +139,5 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	{
 		//Sprint
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AShooterCharacter::Action_Sprint);
-
-		//Shoot
-		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &AShooterCharacter::Action_Shoot);
 	}
 }
