@@ -15,7 +15,8 @@
 - - -
 <details>
 <summary>📂 点击展开 6月份的历史记录</summary>
-### 2026-06-15 317
+    
+###  2026-06-15 317
 
 - ✨ **新增**: 修改abilitytask中数据格式，完善RPC内容。
 - 📕 **小记**：PRC这部分有点复杂逛abilitytask内部炮弹的传输逻辑就改了三。对于传给服务器的内容一直在摇摆，目前定为了GameplayAbilityTargetData_SingleTargetHit存入摄像头位置和准星标准位置（超过50000即为50000处）。
