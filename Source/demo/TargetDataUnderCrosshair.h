@@ -6,7 +6,8 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "TargetDataUnderCrosshair.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCrosshairTargetDataSignature, const FVector&, Data);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(ForCrosshairTargetDataSignature, const FGameplayAbilityTargetDataHandle&, DataHandle);
 
 /**
  * 
@@ -22,9 +23,13 @@ public:
 	static UTargetDataUnderCrosshair* CreateTargetDataUnderCrosshair(UGameplayAbility* OwningAbility);
 
 	UPROPERTY(BlueprintAssignable)
-	FCrosshairTargetDataSignature ValidData;
+	ForCrosshairTargetDataSignature ValidData;
 
 private:
 
-	virtual void Activate() override;	
+	virtual void Activate() override;
+
+	void SendCrosshairTargetData();
+
+	void OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle, FGameplayTag ActivationTag);
 };
