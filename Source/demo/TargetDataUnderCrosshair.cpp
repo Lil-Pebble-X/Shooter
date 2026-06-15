@@ -5,6 +5,8 @@
 #include "ShooterCharacter.h"
 #include "AbilitySystemComponent.h"
 #include "demo.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "GameplayAbilitySpec.h"
 #include "Abilities/GameplayAbilityTargetTypes.h"
 
 UTargetDataUnderCrosshair* UTargetDataUnderCrosshair::CreateTargetDataUnderCrosshair(UGameplayAbility* OwningAbility)
@@ -65,23 +67,22 @@ void UTargetDataUnderCrosshair::SendCrosshairTargetData()
 		QueryParams
 	);
 
-	FGameplayAbilityTargetData_SingleTargetHit* Data = new FGameplayAbilityTargetData_SingleTargetHit();
 
+	FGameplayAbilityTargetDataHandle DataHandle;
+
+	FGameplayAbilityTargetData_SingleTargetHit* Data = new FGameplayAbilityTargetData_SingleTargetHit();
 	if (bHit)
 	{
-		Data->HitResult = CameraHit;
+		DataHandle = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromHitResult(CameraHit);
 	}
 	else
 	{
-		Data->HitResult.TraceStart = CamLoc;
+		Data->HitResult.bBlockingHit = false;   
+		Data->HitResult.Location = TraceEnd;     
+		Data->HitResult.ImpactPoint = TraceEnd;  
 		Data->HitResult.TraceEnd = TraceEnd;
-		Data->HitResult.Location = TraceEnd;
-		Data->HitResult.ImpactPoint = TraceEnd;
-		Data->HitResult.Normal = -CamRot.Vector();
-		Data->HitResult.bBlockingHit = false;
 	}
-
-	FGameplayAbilityTargetDataHandle DataHandle;
+	
 	DataHandle.Add(Data);
 
 	AbilitySystemComponent->ServerSetReplicatedTargetData(
@@ -99,9 +100,43 @@ void UTargetDataUnderCrosshair::SendCrosshairTargetData()
 
 void UTargetDataUnderCrosshair::OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle, FGameplayTag ActivationTag)
 {
+
 	AbilitySystemComponent->ConsumeClientReplicatedTargetData(
 		GetAbilitySpecHandle(),
-		GetActivationPredictionKey());
+		GetActivationPredictionKey()
+	);
+
+	//Helped me solve a long-standing problem, leaving this as a memento.
+	/*
+	if (DataHandle.Num() > 0)
+	{
+		const FGameplayAbilityTargetData* First = DataHandle.Get(0);
+		if (const FGameplayAbilityTargetData_SingleTargetHit* HitData = static_cast<const FGameplayAbilityTargetData_SingleTargetHit*>(First))
+		{
+			const FHitResult& HR = HitData->HitResult;
+			UE_LOG(LogTemp, Warning, TEXT("[SERVER] Received HitData: bBlockingHit=%d Impact=(%f,%f,%f) Location=(%f,%f,%f) Actor=%s"),
+				HR.bBlockingHit,
+				HR.ImpactPoint.X, HR.ImpactPoint.Y, HR.ImpactPoint.Z,
+				HR.Location.X, HR.Location.Y, HR.Location.Z,
+				HR.GetActor() ? *HR.GetActor()->GetName() : TEXT("None")
+			);
+		}
+		else if (const FGameplayAbilityTargetData_LocationInfo* LocData = static_cast<const FGameplayAbilityTargetData_LocationInfo*>(First))
+		{
+			const FVector Loc = LocData->TargetLocation.GetTargetingTransform().GetLocation();
+			UE_LOG(LogTemp, Warning, TEXT("[SERVER] Received LocationData: Location=(%f,%f,%f)"), Loc.X, Loc.Y, Loc.Z);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[SERVER] Received TargetData of unknown type"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[SERVER] Received empty DataHandle"));
+	}
+	*/
+
 	if (ShouldBroadcastAbilityTaskDelegates())
 	{
 		ValidData.Broadcast(DataHandle);

@@ -3,6 +3,7 @@
 
 #include "ShooterAssetManager.h"
 #include "ShooterGameplayTags.h"
+#include "AbilitySystemGlobals.h"
 
 UShooterAssetManager& UShooterAssetManager::Get()
 {	
