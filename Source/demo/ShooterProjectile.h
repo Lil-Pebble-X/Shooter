@@ -32,4 +32,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> ProjectileMesh;
+
 };

@@ -67,13 +67,11 @@ void UTargetDataUnderCrosshair::SendCrosshairTargetData()
 		QueryParams
 	);
 
-
 	FGameplayAbilityTargetDataHandle DataHandle;
-
 	FGameplayAbilityTargetData_SingleTargetHit* Data = new FGameplayAbilityTargetData_SingleTargetHit();
 	if (bHit)
 	{
-		DataHandle = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromHitResult(CameraHit);
+		Data->HitResult = CameraHit;
 	}
 	else
 	{
@@ -82,7 +80,6 @@ void UTargetDataUnderCrosshair::SendCrosshairTargetData()
 		Data->HitResult.ImpactPoint = TraceEnd;  
 		Data->HitResult.TraceEnd = TraceEnd;
 	}
-	
 	DataHandle.Add(Data);
 
 	AbilitySystemComponent->ServerSetReplicatedTargetData(

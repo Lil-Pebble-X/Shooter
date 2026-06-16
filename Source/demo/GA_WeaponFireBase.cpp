@@ -16,7 +16,7 @@ void UGA_WeaponFireBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	
 }
 
-void UGA_WeaponFireBase::SpawnProjectile()
+void UGA_WeaponFireBase::SpawnProjectile(const FVector& ProjectileTargetLocation)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!bIsServer) return;
@@ -25,10 +25,11 @@ void UGA_WeaponFireBase::SpawnProjectile()
 	if (CombatInterface)
 	{
 		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
+		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
 
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);
-		//TODO: Set Spawn Rotation
+		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		AShooterProjectile* Projectile = GetWorld()->SpawnActorDeferred<AShooterProjectile>(
 			ProjectileClass, SpawnTransform,
@@ -68,12 +69,5 @@ bool UGA_WeaponFireBase::PerformHitscan(FHitResult& OutHit)
 	const bool bHit = GetWorld()->LineTraceSingleByChannel(
 		OutHit, Start, End, HitscanTraceChannel, QueryParams
 	);
-
-	#if ENABLE_DRAW_DEBUG
-	DrawDebugLine(GetWorld(), Start, bHit ? OutHit.ImpactPoint : End,
-		bHit ? FColor::Red : FColor::Green, false, 2.f, 0, 2.f);
-	#endif
-
-
 	return bHit;
 }
