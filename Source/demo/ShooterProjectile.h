@@ -33,6 +33,8 @@ private:
 
 	bool bHit = false;
 
+	UPROPERTY(EditDefaultsOnly)
+	float LifeSpan = 5.f;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
@@ -45,4 +47,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundBase> ImpactSound;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USoundBase> LoopingSound;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAudioComponent> LoopingSoundComponent;
 };

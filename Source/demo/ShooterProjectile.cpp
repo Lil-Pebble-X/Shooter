@@ -5,8 +5,10 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Engine/StaticMesh.h"
+#include "demo.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 
 AShooterProjectile::AShooterProjectile()
 {	
@@ -15,6 +17,7 @@ AShooterProjectile::AShooterProjectile()
 
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	SetRootComponent(Sphere);
+	Sphere->SetCollisionObjectType(ECC_Projectile);
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
@@ -35,13 +38,11 @@ AShooterProjectile::AShooterProjectile()
 void AShooterProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	//SetLifeSpan(LifeSpan);//Dangerous, may cause crashes; needs to be fixed in the future.
 	SetReplicateMovement(true);
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AShooterProjectile::OnSphereOverlap);
-	UE_LOG(LogTemp, Warning, TEXT("[%s] Mesh=%s, Visible=%d, Hidden=%d"),
-		HasAuthority() ? TEXT("Server") : TEXT("Client"),
-		*GetNameSafe(ProjectileMesh->GetStaticMesh()),
-		ProjectileMesh->IsVisible(),
-		ProjectileMesh->bHiddenInGame);
+	
+	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
 }
 
 void AShooterProjectile::Destroyed()
@@ -50,6 +51,7 @@ void AShooterProjectile::Destroyed()
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+		LoopingSoundComponent->Stop();
 	}
 
 	Super::Destroyed();
@@ -59,6 +61,7 @@ void AShooterProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponen
 {
 	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+	LoopingSoundComponent->Stop();
 
 	if (HasAuthority())
 	{
