@@ -7,6 +7,7 @@
 #include "GA_WeaponFireBase.generated.h"
 
 class AShooterProjectile;
+class UGameplayEffect;
 /**
  * 
  */
@@ -36,6 +37,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Projectile")
 	TSubclassOf<AShooterProjectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Hitscan")
 	float HitscanRange = 1000.f;

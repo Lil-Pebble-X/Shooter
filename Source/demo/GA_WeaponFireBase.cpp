@@ -7,6 +7,8 @@
 #include "ShooterProjectile.h"
 #include "CombatInterface.h"
 #include "ShooterPlayerController.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 
 void UGA_WeaponFireBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 										  const FGameplayAbilityActorInfo* ActorInfo,
@@ -37,7 +39,9 @@ void UGA_WeaponFireBase::SpawnProjectile(const FVector& ProjectileTargetLocation
 			Cast<APawn>(GetOwningActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-		//TODO: Give the Projectile a Gameplay Effect Spec for causing Damage
+		const UAbilitySystemComponent* SourceASC =  UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+		Projectile->DamageEffectSpecHandle = SpecHandle;
 
 		Projectile->FinishSpawning(SpawnTransform);
 	}

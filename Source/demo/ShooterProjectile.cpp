@@ -9,6 +9,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 
 AShooterProjectile::AShooterProjectile()
 {	
@@ -65,6 +67,13 @@ void AShooterProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponen
 
 	if (HasAuthority())
 	{
+
+		if (UAbilitySystemComponent* TargetASC =  UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+		{
+			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+		}
+
+
 		Destroy();
 	}
 	else
