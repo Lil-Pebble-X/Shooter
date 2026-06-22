@@ -49,12 +49,6 @@ protected:
 	//Running Speed
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement_Speed")
 	float SprintSpeed= 350.0f; ;
-
-	UPROPERTY(EditDefaultsOnly)
-	float MaxHealth = 100;
-
-	UPROPERTY(VisibleAnywhere)
-	float Health = 0;
 	
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

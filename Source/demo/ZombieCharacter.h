@@ -6,7 +6,11 @@
 #include "BaseCharacter.h"
 #include "GameFramework/Character.h"
 #include "EnemyInterface.h"
+#include "OverlayWidgetController.h"
 #include "ZombieCharacter.generated.h"
+
+
+class UWidgetComponent;
 
 UCLASS()
 class DEMO_API AZombieCharacter : public ABaseCharacter, public IEnemyInterface
@@ -19,14 +23,22 @@ public:
 
 	void Scratch();
 
+	/** Zombie Interface */
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+	/** end Zombie Interface*/
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnMaxHealthChanged;
 
 	// Attack
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
@@ -39,6 +51,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void InitAbilityActorInfo() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UWidgetComponent> HealthBar;
 
 private:
 

@@ -35,8 +35,6 @@ void ABaseCharacter::BeginPlay()
 		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
 
-	Health = MaxHealth;
-
 	GameHasStarted = true;
 }
 
@@ -57,10 +55,10 @@ UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-//Death
+//Death(need change)
 bool ABaseCharacter::IsDead() const
 {
-	return GameHasStarted && Health <= 0;
+	return false;
 }
 
 void ABaseCharacter::InitAbilityActorInfo()

@@ -7,7 +7,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BaseAbilitySystemComponent.h"
 #include "BaseAttributeSet.h"
-
+#include "Components/WidgetComponent.h"
+#include "ShooterUserWidget.h"
 #include "demo.h"
 
 // Sets default values
@@ -25,6 +26,9 @@ AZombieCharacter::AZombieCharacter()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSet = CreateDefaultSubobject<UBaseAttributeSet>("AttributeSet");
+
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
+	HealthBar->SetupAttachment(GetRootComponent());
 }
 
 void AZombieCharacter::Scratch()
@@ -61,6 +65,32 @@ void AZombieCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	InitAbilityActorInfo();
+
+
+	if (UShooterUserWidget* ShooterUserWidget = Cast<UShooterUserWidget>(HealthBar->GetUserWidgetObject()))
+	{
+		ShooterUserWidget->SetWidgetController(this);
+	}
+
+	if(const UBaseAttributeSet* ShooterAS = Cast<UBaseAttributeSet>(AttributeSet))
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ShooterAS->GetHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data) 
+			{
+				OnHealthChanged.Broadcast(Data.NewValue);
+			}
+		);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ShooterAS->GetMaxHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)
+			{
+				OnMaxHealthChanged.Broadcast(Data.NewValue);
+			}
+		);
+
+		OnHealthChanged.Broadcast(ShooterAS->GetHealth());
+		OnMaxHealthChanged.Broadcast(ShooterAS->GetMaxHealth());
+	}
+	
 }
 
 void AZombieCharacter::InitAbilityActorInfo()
