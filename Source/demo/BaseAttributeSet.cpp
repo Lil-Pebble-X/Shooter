@@ -7,23 +7,24 @@
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
 #include "ShooterGameplayTags.h"
+#include "GameplayTagsManager.h"
 
 
 
 UBaseAttributeSet::UBaseAttributeSet()
 {
-	InitSpeed(150.f);
-	InitMaxCritRate(100.f);
-
 	const FShooterGameplayTags& GameplayTags = FShooterGameplayTags::Get();
 
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_ElementalMastery, GetElementalMasteryAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_CritRate, GetCritRateAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_AttackPower, GetAttackPowerAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_CritDmg, GetCritDmgAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Primary_MaxShield, GetMaxShieldAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Primary_MaxHealth, GetMaxHealthAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_MaxCritRate, GetMaxCritRateAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Speed, GetSpeedAttribute);
+	TagsToAttributes.Add(UGameplayTagsManager::Get().RequestGameplayTag(FName("Attributes.Vital.MaxHealth")),
+		GetMaxHealthAttribute);
+	TagsToAttributes.Add(UGameplayTagsManager::Get().RequestGameplayTag(FName("Attributes.Vital.MaxShield")),
+		GetMaxShieldAttribute);
 }
 
 void UBaseAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -35,13 +36,14 @@ void UBaseAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, CritRate, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, MaxCritRate, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, CritDmg, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, MaxShield, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, AttackPower, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, Speed, COND_None, REPNOTIFY_Always);
+	
 	//
 	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, Shield, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, Health, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, Speed, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, MaxShield, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 }
 
 void UBaseAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -157,6 +159,24 @@ void UBaseAttributeSet::OnRep_Shield(const FGameplayAttributeData& OldShield) co
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, Shield, OldShield);
 }
 
+void UBaseAttributeSet::OnRep_AttackPower(const FGameplayAttributeData& OldAttackPower) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, AttackPower, OldAttackPower);
+}
+
+void UBaseAttributeSet::OnRep_Speed(const FGameplayAttributeData& OldSpeed) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, Speed, OldSpeed);
+}
+
+//
+
+void UBaseAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, Health, OldHealth);
+}
+
+
 void UBaseAttributeSet::OnRep_MaxShield(const FGameplayAttributeData& OldMaxShield) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, MaxShield, OldMaxShield);
@@ -165,20 +185,4 @@ void UBaseAttributeSet::OnRep_MaxShield(const FGameplayAttributeData& OldMaxShie
 void UBaseAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, MaxHealth, OldMaxHealth);
-}
-
-//
-void UBaseAttributeSet::OnRep_AttackPower(const FGameplayAttributeData& OldAttackPower) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, AttackPower, OldAttackPower);
-}
-
-void UBaseAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, Health, OldHealth);
-}
-
-void UBaseAttributeSet::OnRep_Speed(const FGameplayAttributeData& OldSpeed) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, Speed, OldSpeed);
 }

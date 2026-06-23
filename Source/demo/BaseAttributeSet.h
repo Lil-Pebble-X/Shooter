@@ -91,17 +91,13 @@ public:
 	FGameplayAttributeData CritDmg;
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, CritDmg);
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxShield, Category = "Primary Attributes")
-	FGameplayAttributeData MaxShield;
-	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, MaxShield);
-	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Primary Attributes")
-	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, MaxHealth);
-
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_AttackPower, Category = "Primary Attributes")
 	FGameplayAttributeData AttackPower;
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, AttackPower);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Speed, Category = "Primary Attributes")
+	FGameplayAttributeData Speed;
+	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Speed);
 
 	/*
 	* Vital Attributes
@@ -114,9 +110,13 @@ public:
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Health);
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Speed, Category = "Vital Attributes")
-	FGameplayAttributeData Speed;
-	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Speed);
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxShield, Category = "Vital Attributes")
+	FGameplayAttributeData MaxShield;
+	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, MaxShield);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, MaxHealth);
 
 	//
 	UFUNCTION()
@@ -132,13 +132,11 @@ public:
 	void OnRep_CritDmg(const FGameplayAttributeData& OldCritDmg) const;
 
 	UFUNCTION()
-	void OnRep_MaxShield(const FGameplayAttributeData& OldMaxShield) const;
-
-	UFUNCTION()
-	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
-
-	UFUNCTION()
 	void OnRep_AttackPower(const FGameplayAttributeData& OldAttackPower) const;
+
+	UFUNCTION()
+	void OnRep_Speed(const FGameplayAttributeData& OldSpeed) const;
+
 	//
 	UFUNCTION()
 	void OnRep_Shield(const FGameplayAttributeData& OldShield) const;
@@ -147,7 +145,10 @@ public:
 	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 
 	UFUNCTION()
-	void OnRep_Speed(const FGameplayAttributeData& OldSpeed) const;
+	void OnRep_MaxShield(const FGameplayAttributeData& OldMaxShield) const;
+
+	UFUNCTION()
+	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
 
 private:
 

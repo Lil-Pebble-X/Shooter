@@ -36,16 +36,10 @@ void FShooterGameplayTags::InitializeNativeGameplayTags()
 		FString("Base value of damage dealt")
 	);
 
-	GameplayTags.Attributes_Primary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Primary.MaxHealth"),
-		FString("Maximum amount of Health obtainable")
+	GameplayTags.Attributes_Primary_Speed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Primary.Speed"),
+		FString("Character Movement Speed")
 	);
-
-	GameplayTags.Attributes_Primary_MaxShield = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Primary.MaxShield"),
-		FString("Maximum amount of Shield obtainable")
-	);
-
 
 	/*
 	*   InputTags
