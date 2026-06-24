@@ -9,6 +9,7 @@
 #include "BaseAttributeSet.h"
 #include "Components/WidgetComponent.h"
 #include "ShooterUserWidget.h"
+#include "ShooterAbilitySystemLibrary.h"
 #include "demo.h"
 
 // Sets default values
@@ -99,6 +100,11 @@ void AZombieCharacter::InitAbilityActorInfo()
 	Cast<UBaseAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
 	InitializeDefaultAttributes();
+}
+
+void AZombieCharacter::InitializeDefaultAttributes() const
+{
+	UShooterAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
 // Called every frame

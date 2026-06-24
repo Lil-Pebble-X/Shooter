@@ -7,7 +7,9 @@
 #include "GameFramework/Character.h"
 #include "EnemyInterface.h"
 #include "OverlayWidgetController.h"
+#include "CharacterClassInfo.h"
 #include "ZombieCharacter.generated.h"
+
 
 
 class UWidgetComponent;
@@ -47,13 +49,20 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool FinishAttack() const;
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	virtual void InitAbilityActorInfo() override;
 
+	virtual void InitializeDefaultAttributes() const override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "character class  Defaults")
+	int32 Level = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "character class  Defaults")
+	ECharacterClass CharacterClass = ECharacterClass::Zombie;
 
 private:
 

@@ -25,6 +25,8 @@ public:
 	FGameplayTag Attributes_Primary_CritDmg;
 	FGameplayTag Attributes_Primary_AttackPower;
 	FGameplayTag Attributes_Primary_Speed;
+	FGameplayTag Attributes_Primary_MaxHealth;
+	FGameplayTag Attributes_Primary_MaxShield;
 
 	FGameplayTag InputTag_LMB;
 	FGameplayTag InputTag_RMB;
