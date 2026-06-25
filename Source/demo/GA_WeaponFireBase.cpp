@@ -9,6 +9,7 @@
 #include "ShooterPlayerController.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "ShooterGameplayTags.h"
 
 void UGA_WeaponFireBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 										  const FGameplayAbilityActorInfo* ActorInfo,
@@ -41,6 +42,10 @@ void UGA_WeaponFireBase::SpawnProjectile(const FVector& ProjectileTargetLocation
 
 		const UAbilitySystemComponent* SourceASC =  UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+		
+		FShooterGameplayTags GameplayTags = FShooterGameplayTags::Get();
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Damage, 30.f);
+
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 
 		Projectile->FinishSpawning(SpawnTransform);

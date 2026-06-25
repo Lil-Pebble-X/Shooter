@@ -6,7 +6,7 @@
 #include "ShooterGameModeBase.h"
 #include "KillEmAllGameMode.generated.h"
 
-class UCharacterClassInfo;
+
 
 /**
  * 
@@ -19,9 +19,6 @@ class DEMO_API AKillEmAllGameMode : public AShooterGameModeBase
 
 public:
 	virtual void PawnKilled(APawn* PawnKilled) override;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
-	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
 
 private:
 	void EndGame(bool bIsPlayerWinner);

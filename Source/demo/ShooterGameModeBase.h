@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "ShooterGameModeBase.generated.h"
 
+class UCharacterClassInfo;
 /**
  * 
  */
@@ -17,6 +18,7 @@ class DEMO_API AShooterGameModeBase : public AGameModeBase
 public:
 	virtual void PawnKilled(APawn* PawnKilled);
 
-
+	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
+	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
 
 };

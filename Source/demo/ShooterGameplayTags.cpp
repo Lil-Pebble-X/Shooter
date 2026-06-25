@@ -84,4 +84,13 @@ void FShooterGameplayTags::InitializeNativeGameplayTags()
 		FName("InputTag.3"),
 		FString("Input Tag for Number 3 Key")
 	);
+
+	/*
+	*   EffectTags
+	*/
+	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage"),
+		FString("Damage")
+	);
+
 }

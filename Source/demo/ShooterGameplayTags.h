@@ -35,6 +35,7 @@ public:
 	FGameplayTag InputTag_2;
 	FGameplayTag InputTag_3;
 
+	FGameplayTag Damage;
 private:
 	 
 	static FShooterGameplayTags GameplayTags;
