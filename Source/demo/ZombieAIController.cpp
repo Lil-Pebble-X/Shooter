@@ -24,14 +24,3 @@ void AZombieAIController::Tick(float DeltaTime)
 {	
 	Super::Tick(DeltaTime);
 }
-
-bool AZombieAIController::IsDead() const
-{
-	AZombieCharacter* ControlledCharacter = Cast<AZombieCharacter>(GetPawn());
-	if (ControlledCharacter != nullptr)
-	{
-		return ControlledCharacter->IsDead();
-	}
-
-	return true;
-}

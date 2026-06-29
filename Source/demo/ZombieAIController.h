@@ -17,8 +17,6 @@ class DEMO_API AZombieAIController : public AAIController
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	bool IsDead() const;
-
 protected:
 
 	virtual void BeginPlay() override;

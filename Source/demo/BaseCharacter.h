@@ -29,9 +29,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//Death detection
-	UFUNCTION(BlueprintPure)
-	bool IsDead() const;
+	virtual void Die() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastHandleDeath();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
 	float Damage;
@@ -42,12 +43,15 @@ protected:
 
 	bool GameHasStarted;
 
+	//Distinguish Whether Character Has Weapon
+	virtual void HandleWeaponOnDeath();
+
 	//Walking Speed
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement_Speed")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat")
 	float WalkSpeed = 150.0f;;
 
 	//Running Speed
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement_Speed")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat")
 	float SprintSpeed= 350.0f; ;
 	
 	UPROPERTY()

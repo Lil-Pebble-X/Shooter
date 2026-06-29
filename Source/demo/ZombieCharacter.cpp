@@ -11,6 +11,7 @@
 #include "ShooterUserWidget.h"
 #include "ShooterAbilitySystemLibrary.h"
 #include "demo.h"
+#include "ShooterGameplayTags.h"
 
 // Sets default values
 AZombieCharacter::AZombieCharacter()
@@ -65,7 +66,9 @@ void AZombieCharacter::UnHighlightActor()
 void AZombieCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	InitAbilityActorInfo();
+	UShooterAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
 
 
 	if (UShooterUserWidget* ShooterUserWidget = Cast<UShooterUserWidget>(HealthBar->GetUserWidgetObject()))
@@ -105,6 +108,12 @@ void AZombieCharacter::InitAbilityActorInfo()
 void AZombieCharacter::InitializeDefaultAttributes() const
 {
 	UShooterAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
+}
+
+void AZombieCharacter::Die()
+{
+	SetLifeSpan(LifeSpan);
+	Super::Die();
 }
 
 // Called every frame

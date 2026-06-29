@@ -63,3 +63,17 @@ void UShooterAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* Wo
 	const FGameplayEffectSpecHandle VitalAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfo->VitalAttributes, Level, VitalAttributesContextHandle);
 	ASC->ApplyGameplayEffectSpecToSelf(*VitalAttributesSpecHandle.Data.Get());
 }
+
+void UShooterAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
+{
+	AKillEmAllGameMode* KillEmAllGameMode = Cast<AKillEmAllGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (KillEmAllGameMode == nullptr) return;
+
+	UCharacterClassInfo* CharacterClassInfo = KillEmAllGameMode->CharacterClassInfo;
+	for (TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+        ASC->GiveAbility(AbilitySpec);
+	}
+
+}

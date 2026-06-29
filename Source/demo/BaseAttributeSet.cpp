@@ -140,8 +140,19 @@ void UBaseAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		{
 			const float NewHealth = GetHealth() - LocalIncomingDamage;
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
-
 			const bool bFatal = NewHealth <= 0.f;
+			if (bFatal)
+			{
+
+			}
+			else
+			{
+				/* //Example
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FShooterGameplayTags::Get().);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+					*/
+			}
 	    }
 	}
 }

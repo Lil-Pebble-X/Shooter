@@ -15,17 +15,6 @@ void AKillEmAllGameMode::PawnKilled(APawn* PawnKilled)
 	{
 		EndGame(false);
 	}
-
-	for (AZombieAIController* Controller : TActorRange<AZombieAIController>(GetWorld()))
-	{
-		if (!Controller->IsDead())
-		{
-			return;
-		}
-	}
-
-	EndGame(true);
-
 }
 
 void AKillEmAllGameMode::EndGame(bool bIsPlayerWinner)

@@ -46,6 +46,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName WeaponTipSocketName;
+
+	virtual void HandleWeaponOnDeath() override;
 private:	
 	//input system
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")

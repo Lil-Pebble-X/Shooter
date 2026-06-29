@@ -46,6 +46,17 @@ void AShooterCharacter::BeginPlay()
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
 }
 
+void AShooterCharacter::HandleWeaponOnDeath()
+{
+	if (!Weapon) return;
+
+	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	Weapon->SetSimulatePhysics(true);
+	Weapon->SetEnableGravity(true);
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+}
+
 FVector AShooterCharacter::GetCombatSocketLocation()
 {
 	check(Weapon);

@@ -30,6 +30,9 @@ public:
 	virtual void UnHighlightActor() override;
 	/** end Zombie Interface*/
 
+	/** Combat Interface*/
+	virtual void Die() override;
+	/** end Combat Interface */ 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -45,6 +48,9 @@ public:
 	// Attack
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	bool IsAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	float LifeSpan = 5.f;
 
 	UFUNCTION(BlueprintPure)
 	bool FinishAttack() const;
