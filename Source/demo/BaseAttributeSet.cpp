@@ -8,6 +8,7 @@
 #include "GameplayEffectExtension.h"
 #include "ShooterGameplayTags.h"
 #include "GameplayTagsManager.h"
+#include "CombatInterface.h"
 
 
 
@@ -143,7 +144,11 @@ void UBaseAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const bool bFatal = NewHealth <= 0.f;
 			if (bFatal)
 			{
-
+				ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+				if (CombatInterface)
+                {
+                    CombatInterface->Die();
+                }
 			}
 			else
 			{

@@ -44,7 +44,8 @@ void AShooterProjectile::BeginPlay()
 	SetReplicateMovement(true);
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AShooterProjectile::OnSphereOverlap);
 	
-	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
+	//Security Risks
+	//LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
 }
 
 void AShooterProjectile::Destroyed()
@@ -53,7 +54,7 @@ void AShooterProjectile::Destroyed()
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-		LoopingSoundComponent->Stop();
+		//LoopingSoundComponent->Stop();
 	}
 
 	Super::Destroyed();
@@ -63,7 +64,7 @@ void AShooterProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponen
 {
 	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-	LoopingSoundComponent->Stop();
+	//LoopingSoundComponent->Stop();
 
 	if (HasAuthority())
 	{

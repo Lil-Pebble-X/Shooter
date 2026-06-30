@@ -44,6 +44,7 @@ protected:
 	bool GameHasStarted;
 
 	//Distinguish Whether Character Has Weapon
+	UFUNCTION()
 	virtual void HandleWeaponOnDeath();
 
 	//Walking Speed
