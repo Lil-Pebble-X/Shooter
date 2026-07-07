@@ -13,6 +13,7 @@ struct FInputActionValue;
 class UShooterInputConfig;
 class UBaseAbilitySystemComponent;
 class IEnemyInterface;
+class UDamageTextComponent;
 
 /**
  * 
@@ -30,6 +31,8 @@ public:
 
 	virtual void GameHasEnded(class AActor* EndGameFocus = nullptr, bool bIsWinner = false) override;
 
+	UFUNCTION(Client, Reliable)
+	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter);
 protected:
 
 	// Called when the game starts or when spawned
@@ -87,4 +90,7 @@ private:
 	TObjectPtr<UBaseAbilitySystemComponent> BaseAbilitySystemComponent;
 
 	UBaseAbilitySystemComponent* GetASC();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 };

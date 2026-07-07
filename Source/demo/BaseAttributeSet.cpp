@@ -9,7 +9,8 @@
 #include "ShooterGameplayTags.h"
 #include "GameplayTagsManager.h"
 #include "CombatInterface.h"
-
+#include "ShooterPlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
 
 UBaseAttributeSet::UBaseAttributeSet()
@@ -156,9 +157,22 @@ void UBaseAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				FGameplayTagContainer TagContainer;
 				TagContainer.AddTag(FShooterGameplayTags::Get().);
 				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
-					*/
+				*/
 			}
+
+			ShowFloatingText(Props, LocalIncomingDamage);
 	    }
+	}
+}
+
+void UBaseAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage) const
+{
+	if (Props.SourceCharacter != Props.TargetCharacter)
+	{
+		if (AShooterPlayerController* PC = Cast<AShooterPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
+		{
+			PC->ShowDamageNumber(Damage, Props.TargetCharacter);
+		}
 	}
 }
 
