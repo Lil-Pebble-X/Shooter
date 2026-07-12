@@ -6,6 +6,7 @@
 #include "ShooterPlayerState.h"
 #include "ShooterWidgetController.h"
 #include "AttributeMenuWidgetController.h"
+#include "ShooterGameModeBase.h"
 #include "KillEmAllGameMode.h"
 #include "AbilitySystemComponent.h"
 
@@ -45,12 +46,9 @@ UAttributeMenuWidgetController* UShooterAbilitySystemLibrary::GetAttributeMenuWi
 
 void UShooterAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC)
 {
-	AKillEmAllGameMode* KillEmAllGameMode = Cast<AKillEmAllGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (KillEmAllGameMode == nullptr) return;
-
 	AActor* AvatarActor = ASC->GetAvatarActor();
 
-	UCharacterClassInfo* CharacterClassInfo = KillEmAllGameMode->CharacterClassInfo;
+	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
 	FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 
 	FGameplayEffectContextHandle PrimaryAttributesContextHandle = ASC->MakeEffectContext();
@@ -66,14 +64,19 @@ void UShooterAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* Wo
 
 void UShooterAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
-	AKillEmAllGameMode* KillEmAllGameMode = Cast<AKillEmAllGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (KillEmAllGameMode == nullptr) return;
-
-	UCharacterClassInfo* CharacterClassInfo = KillEmAllGameMode->CharacterClassInfo;
+	UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
 	for (TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
         ASC->GiveAbility(AbilitySpec);
 	}
 
+}
+
+UCharacterClassInfo* UShooterAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
+{
+	AKillEmAllGameMode* KillEmAllGameMode = Cast<AKillEmAllGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (KillEmAllGameMode == nullptr) return nullptr;
+
+	return KillEmAllGameMode->CharacterClassInfo;
 }

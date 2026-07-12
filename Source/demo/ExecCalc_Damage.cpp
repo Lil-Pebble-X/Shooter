@@ -6,17 +6,21 @@
 #include "BaseAttributeSet.h"
 #include "ShooterGameplayTags.h"
 
+#include "CombatInterface.h"
+
 struct ShooterDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Shield);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CritRate);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CritDmg);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(AttackPower);
 
 	ShooterDamageStatics()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBaseAttributeSet, Shield, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UBaseAttributeSet, CritRate, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UBaseAttributeSet, CritDmg, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UBaseAttributeSet, CritRate, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UBaseAttributeSet, CritDmg, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UBaseAttributeSet, AttackPower, Source, false);
 	}
 };
 
@@ -31,6 +35,7 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(DamageStatics().ShieldDef);
 	RelevantAttributesToCapture.Add(DamageStatics().CritRateDef);
 	RelevantAttributesToCapture.Add(DamageStatics().CritDmgDef);
+	RelevantAttributesToCapture.Add(DamageStatics().AttackPowerDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -38,8 +43,10 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	const UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
 	const UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
 	
-	const AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
-	const AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+	AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
+	AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
+	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
 
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
@@ -55,21 +62,24 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// Check critical hit chance and critical damage multiplier; determine if a critical hit occurs.
 	// If critical, increase damage by the critical damage multiplier.
 
-	float TargetCritRate = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CritRateDef, EvaluationParameters, TargetCritRate);
-	TargetCritRate = FMath::Max<float>(TargetCritRate, 0.f);
+	float SourceCritRate = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CritRateDef, EvaluationParameters, SourceCritRate);
+	SourceCritRate = FMath::Max<float>(SourceCritRate, 0.f);
 
-	float TargetCritDmg = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CritDmgDef, EvaluationParameters, TargetCritDmg);
-	TargetCritDmg = FMath::Max<float>(TargetCritDmg, 0.f);
+	float SourceCritDmg = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CritDmgDef, EvaluationParameters, SourceCritDmg);
+	SourceCritDmg = FMath::Max<float>(SourceCritDmg, 0.f);
 
-	const bool bCriticalHit = FMath::RandRange(0, 99) <TargetCritRate;
+	const bool bCriticalHit = FMath::RandRange(0, 99) < SourceCritRate;
 	if (bCriticalHit)
 	{
-		Damage = (TargetCritDmg / 100.f) * Damage;
+		Damage = Damage * (SourceCritDmg * 0.01f);
 	}
 
-	// Detect Shield; if present, absorb damage with the shield.
+	float SourceAttackPower = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().AttackPowerDef, EvaluationParameters, SourceAttackPower);
+	SourceAttackPower = FMath::Max<float>(SourceAttackPower, 0.f);
+	Damage = Damage * (SourceAttackPower * 0.01f);
 
 
 	const FGameplayModifierEvaluatedData EvaluatedDta(UBaseAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);

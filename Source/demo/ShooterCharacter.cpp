@@ -86,6 +86,7 @@ void AShooterCharacter::PossessedBy(AController* NewController)
 	//Init ability actor info for the  Server
 	InitAbilityActorInfo();
 	AddCharacterAbilities();
+	InitializeDefaultAttributes();
 }
 
 void AShooterCharacter::OnRep_PlayerState()
@@ -120,7 +121,6 @@ void AShooterCharacter::InitAbilityActorInfo()
 			ShooterHUD->InitOverlay(ShooterPlayerController, ShooterPlayerState, AbilitySystemComponent, AttributeSet);
 		}
 	}
-	InitializeDefaultAttributes();
 }
 
 

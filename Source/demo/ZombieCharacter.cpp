@@ -67,9 +67,11 @@ void AZombieCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	InitAbilityActorInfo();
-	UShooterAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
-
+	if (HasAuthority())
+	{
+		InitAbilityActorInfo();
+		UShooterAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	}
 
 	if (UShooterUserWidget* ShooterUserWidget = Cast<UShooterUserWidget>(HealthBar->GetUserWidgetObject()))
 	{
