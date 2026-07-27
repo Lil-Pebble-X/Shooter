@@ -9,6 +9,7 @@
 #include "ShooterGameModeBase.h"
 #include "KillEmAllGameMode.h"
 #include "AbilitySystemComponent.h"
+#include "ShooterAbilityTypes.h"
 
 UOverlayWidgetController* UShooterAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
 {
@@ -68,7 +69,7 @@ void UShooterAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldCont
 	for (TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
-        ASC->GiveAbility(AbilitySpec);
+		ASC->GiveAbility(AbilitySpec);
 	}
 
 }
@@ -79,4 +80,21 @@ UCharacterClassInfo* UShooterAbilitySystemLibrary::GetCharacterClassInfo(const U
 	if (KillEmAllGameMode == nullptr) return nullptr;
 
 	return KillEmAllGameMode->CharacterClassInfo;
+}
+
+bool UShooterAbilitySystemLibrary::IsCriticalHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FShooterGameplayEffectContext* ShooterEffectContext = static_cast<const FShooterGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return ShooterEffectContext->IsCriticalHit();
+	}
+	return false;
+}
+
+void UShooterAbilitySystemLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& EffectContextHandle, bool bInIsCriticalHit)
+{
+	if (FShooterGameplayEffectContext* ShooterEffectContext = static_cast<FShooterGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		ShooterEffectContext->SetIsCriticalHit(bInIsCriticalHit);
+	}
 }

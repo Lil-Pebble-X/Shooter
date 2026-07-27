@@ -3,9 +3,9 @@
 
 #include "ShooterAbilityTypes.h"
 
-bool FShooterGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap*, bool& bOutSuccess)
+bool FShooterGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
 {
-	unit32 RepBits = 0;
+	uint32 RepBits = 0;
 	if (Ar.IsSaving())
 	{
 		if (bReplicateInstigator && Instigator.IsValid())

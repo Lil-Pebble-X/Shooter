@@ -11,6 +11,7 @@
 #include "CombatInterface.h"
 #include "ShooterPlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "ShooterAbilitySystemLibrary.h"
 
 
 UBaseAttributeSet::UBaseAttributeSet()
@@ -160,18 +161,20 @@ void UBaseAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				*/
 			}
 
-			ShowFloatingText(Props, LocalIncomingDamage);
+
+			const bool bCriticalHit = UShooterAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
+			ShowFloatingText(Props, LocalIncomingDamage,  bCriticalHit);
 	    }
 	}
 }
 
-void UBaseAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage) const
+void UBaseAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bCriticalHit) const
 {
 	if (Props.SourceCharacter != Props.TargetCharacter)
 	{
 		if (AShooterPlayerController* PC = Cast<AShooterPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
 		{
-			PC->ShowDamageNumber(Damage, Props.TargetCharacter);
+			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bCriticalHit);
 		}
 	}
 }

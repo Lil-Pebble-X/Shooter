@@ -5,8 +5,9 @@
 #include "AbilitySystemComponent.h"
 #include "BaseAttributeSet.h"
 #include "ShooterGameplayTags.h"
-
 #include "CombatInterface.h"
+#include "ShooterAbilityTypes.h"
+#include "ShooterAbilitySystemLibrary.h"
 
 struct ShooterDamageStatics
 {
@@ -71,6 +72,10 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	SourceCritDmg = FMath::Max<float>(SourceCritDmg, 0.f);
 
 	const bool bCriticalHit = FMath::RandRange(0, 99) < SourceCritRate;
+
+	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
+	UShooterAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCriticalHit);
+
 	if (bCriticalHit)
 	{
 		Damage = Damage * (SourceCritDmg * 0.01f);
