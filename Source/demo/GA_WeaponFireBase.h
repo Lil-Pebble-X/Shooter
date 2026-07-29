@@ -3,7 +3,7 @@
 #pragma once
  
 #include "CoreMinimal.h"
-#include "ShooterGameplayAbility.h"
+#include "ShooterDamageGameplayAbility.h"
 #include "GA_WeaponFireBase.generated.h"
 
 class AShooterProjectile;
@@ -12,7 +12,7 @@ class UGameplayEffect;
  * 
  */
 UCLASS()
-class DEMO_API UGA_WeaponFireBase : public UShooterGameplayAbility
+class DEMO_API UGA_WeaponFireBase : public UShooterDamageGameplayAbility
 {
 	GENERATED_BODY()
 
@@ -37,9 +37,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Projectile")
 	TSubclassOf<AShooterProjectile> ProjectileClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Hitscan")
 	float HitscanRange = 1000.f;

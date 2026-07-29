@@ -38,6 +38,8 @@ public:
 	FGameplayTag Damage;
 	FGameplayTag Damage_Fire;
 
+	TArray<FGameplayTag> DamageTypes;
+
 private:
 	 
 	static FShooterGameplayTags GameplayTags;
