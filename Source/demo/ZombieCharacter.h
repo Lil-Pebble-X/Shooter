@@ -13,6 +13,8 @@
 
 
 class UWidgetComponent;
+class UBehaviorTree;
+class AZombieAIController;
 
 UCLASS()
 class DEMO_API AZombieCharacter : public ABaseCharacter, public IEnemyInterface
@@ -22,7 +24,10 @@ class DEMO_API AZombieCharacter : public ABaseCharacter, public IEnemyInterface
 public:
 	// Sets default values for this character's properties
 	AZombieCharacter();
-
+	
+	virtual void PossessedBy(AController* NewController) override;
+	
+	//old
 	void Scratch();
 
 	/** Zombie Interface */
@@ -70,6 +75,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "character class  Defaults")
 	ECharacterClass CharacterClass = ECharacterClass::Zombie;
 
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AZombieAIController> ZombieAIController;
 private:
 
 	UPROPERTY(EditAnywhere)

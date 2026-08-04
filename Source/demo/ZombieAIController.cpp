@@ -4,6 +4,7 @@
 #include "ZombieAIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "ZombieCharacter.h"
 
 void AZombieAIController::BeginPlay()
@@ -23,4 +24,12 @@ void AZombieAIController::BeginPlay()
 void AZombieAIController::Tick(float DeltaTime)
 {	
 	Super::Tick(DeltaTime);
+}
+
+AZombieAIController::AZombieAIController()
+{
+	BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>("BlackboardComponent");
+	check(BlackboardComponent);
+	BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>("BehaviorTreeComponent");
+	check(BehaviorTreeComponent);
 }

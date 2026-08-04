@@ -11,6 +11,9 @@
 #include "ShooterUserWidget.h"
 #include "ShooterAbilitySystemLibrary.h"
 #include "demo.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "ZombieAIController.h"
 #include "ShooterGameplayTags.h"
 
 // Sets default values
@@ -31,6 +34,13 @@ AZombieCharacter::AZombieCharacter()
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
+}
+
+void AZombieCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	ZombieAIController = Cast<AZombieAIController>(NewController);
 }
 
 void AZombieCharacter::Scratch()
