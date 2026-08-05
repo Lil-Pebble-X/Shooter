@@ -12,7 +12,7 @@
 #include "ShooterAbilitySystemLibrary.h"
 #include "demo.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "ZombieAIController.h"
 #include "ShooterGameplayTags.h"
 
@@ -40,7 +40,10 @@ void AZombieCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	if (!HasAuthority()) return;
 	ZombieAIController = Cast<AZombieAIController>(NewController);
+	ZombieAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	ZombieAIController->RunBehaviorTree(BehaviorTree);
 }
 
 void AZombieCharacter::Scratch()
