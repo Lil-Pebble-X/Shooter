@@ -11,25 +11,8 @@ void AZombieAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (AIBehavior != nullptr)
-	{
-		RunBehaviorTree(AIBehavior);
-
-		APawn *PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-	
-		GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());
-	}
 }
-
 void AZombieAIController::Tick(float DeltaTime)
 {	
 	Super::Tick(DeltaTime);
-}
-
-AZombieAIController::AZombieAIController()
-{
-	Blackboard = CreateDefaultSubobject<UBlackboardComponent>("BlackboardComponent");
-	check(Blackboard);
-	BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>("BehaviorTreeComponent");
-	check(BehaviorTreeComponent);
 }

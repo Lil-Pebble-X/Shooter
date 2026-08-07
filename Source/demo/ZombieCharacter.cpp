@@ -42,8 +42,9 @@ void AZombieCharacter::PossessedBy(AController* NewController)
 
 	if (!HasAuthority()) return;
 	ZombieAIController = Cast<AZombieAIController>(NewController);
-	ZombieAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	if (!ZombieAIController || !BehaviorTree) return;
 	ZombieAIController->RunBehaviorTree(BehaviorTree);
+
 }
 
 void AZombieCharacter::Scratch()
