@@ -49,7 +49,7 @@ void AZombieCharacter::PossessedBy(AController* NewController)
 	ZombieAIController = Cast<AZombieAIController>(NewController);
 	if (!ZombieAIController || !BehaviorTree) return;
 	ZombieAIController->RunBehaviorTree(BehaviorTree);
-
+	ZombieAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Zombie);
 }
 
 void AZombieCharacter::Scratch()
