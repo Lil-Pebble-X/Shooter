@@ -52,12 +52,13 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ABaseCharacter::Die()
 {
-	HandleWeaponOnDeath();
 	MulticastHandleDeath();
 }
 
 void ABaseCharacter::MulticastHandleDeath_Implementation()
 {
+	HandleWeaponOnDeath();
+
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	GetMesh()->SetSimulatePhysics(true);

@@ -154,7 +154,15 @@ void UBaseAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 		if (LocalIncomingDamage > 0.f)
 		{
-			const float NewHealth = GetHealth() - LocalIncomingDamage;
+			//shield
+			const float Absorbed = FMath::Min(GetShield(), LocalIncomingDamage);
+			if (Absorbed > 0.f)
+			{
+				SetShield(GetShield() - Absorbed);
+			}
+			//health
+			const float RemainingDamage = LocalIncomingDamage - Absorbed;
+			const float NewHealth = GetHealth() - RemainingDamage;
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 			const bool bFatal = NewHealth <= 0.f;
 			if (bFatal)

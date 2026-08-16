@@ -50,9 +50,6 @@ void AShooterCharacter::HandleWeaponOnDeath()
 {
 	if (!Weapon) return;
 
-	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-	Weapon->SetSimulatePhysics(true);
-	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 
 }
