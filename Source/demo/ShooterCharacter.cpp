@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "ShooterAbilitySystemLibrary.h"
 #include "ShooterPlayerState.h"
 #include "BaseAbilitySystemComponent.h"
 #include "AbilitySystemComponent.h"
@@ -44,6 +45,11 @@ void AShooterCharacter::BeginPlay()
 
 	// if change weapon
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
+}
+
+void AShooterCharacter::InitializeDefaultAttributes() const
+{
+	UShooterAbilitySystemLibrary::InitializeDefaultAttributes(this, ECharacterClass::Soldier, 1.f, AbilitySystemComponent);
 }
 
 void AShooterCharacter::HandleWeaponOnDeath()

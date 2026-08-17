@@ -31,8 +31,8 @@ UBaseAttributeSet::UBaseAttributeSet()
 
 	//
 	TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Fire, GetFireResistanceAttribute);
-    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Ice, GetLightningResistanceAttribute);
-    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Lightning, GetIceResistanceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Ice, GetIceResistanceAttribute);
+    TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Lightning, GetLightningResistanceAttribute);
     TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Physical, GetPhysicalResistanceAttribute);
 }
 
@@ -185,6 +185,20 @@ void UBaseAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 			const bool bCriticalHit = UShooterAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
 			ShowFloatingText(Props, LocalIncomingDamage,  bCriticalHit);
+
+			//Shield Regen 5s
+			if (Props.TargetASC)
+			{
+				UCharacterClassInfo* ClassInfo = UShooterAbilitySystemLibrary::GetCharacterClassInfo(Props.TargetAvatarActor);
+				if (ClassInfo && ClassInfo->ShieldRegenBlockEffect)
+				{
+					FGameplayEffectContextHandle BlockContext = Props.TargetASC->MakeEffectContext();
+					BlockContext.AddSourceObject(Props.TargetAvatarActor);
+					const FGameplayEffectSpecHandle BlockSpec = Props.TargetASC->MakeOutgoingSpec(
+						ClassInfo->ShieldRegenBlockEffect, 1.f, BlockContext);
+					Props.TargetASC->ApplyGameplayEffectSpecToSelf(*BlockSpec.Data.Get());
+				}
+			}
 	    }
 	}
 }

@@ -139,6 +139,15 @@ void FShooterGameplayTags::InitializeNativeGameplayTags()
 	);
 
 	/*
+	*   Battle
+	*/
+
+	GameplayTags.Attributes_Battle_ShieldRegenBlock = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Battle.ShieldRegenBlock"),
+		FString("Block shield regeneration after taking damage")
+	);
+
+	/*
 	* Map of DamageTypes to Resistances
 	*/
 

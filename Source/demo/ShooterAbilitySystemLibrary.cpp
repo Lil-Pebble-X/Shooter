@@ -61,6 +61,15 @@ void UShooterAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* Wo
 	VitalAttributesContextHandle.AddSourceObject(AvatarActor);
 	const FGameplayEffectSpecHandle VitalAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfo->VitalAttributes, Level, VitalAttributesContextHandle);
 	ASC->ApplyGameplayEffectSpecToSelf(*VitalAttributesSpecHandle.Data.Get());
+
+	if (CharacterClassInfo->ShieldRegenEffect)
+	{
+		FGameplayEffectContextHandle RegenContext = ASC->MakeEffectContext();
+		RegenContext.AddSourceObject(AvatarActor);
+		const FGameplayEffectSpecHandle RegenSpec = ASC->MakeOutgoingSpec(
+			CharacterClassInfo->ShieldRegenEffect, Level, RegenContext);
+		ASC->ApplyGameplayEffectSpecToSelf(*RegenSpec.Data.Get());
+	}
 }
 
 void UShooterAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)

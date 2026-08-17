@@ -33,6 +33,7 @@ public:
 	FGameplayTag Attributes_Resistance_Ice;
 	FGameplayTag Attributes_Resistance_Physical;
 
+	FGameplayTag Attributes_Battle_ShieldRegenBlock;
 
 
 	FGameplayTag InputTag_LMB;
