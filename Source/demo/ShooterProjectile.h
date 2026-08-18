@@ -46,13 +46,13 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> ProjectileMesh;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile|Effects")
 	TObjectPtr<UNiagaraSystem> ImpactEffect;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile|Effects")
 	TObjectPtr<USoundBase> ImpactSound;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile|Effects")
 	TObjectPtr<USoundBase> LoopingSound;
 
 	UPROPERTY(VisibleAnywhere)

@@ -85,10 +85,10 @@ void UShooterAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldCont
 
 UCharacterClassInfo* UShooterAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
 {
-	AKillEmAllGameMode* KillEmAllGameMode = Cast<AKillEmAllGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (KillEmAllGameMode == nullptr) return nullptr;
+	AShooterGameModeBase* ShooterGameMode = Cast<AShooterGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (ShooterGameMode == nullptr) return nullptr;
 
-	return KillEmAllGameMode->CharacterClassInfo;
+	return ShooterGameMode->CharacterClassInfo;
 }
 
 bool UShooterAbilitySystemLibrary::IsCriticalHit(const FGameplayEffectContextHandle& EffectContextHandle)
