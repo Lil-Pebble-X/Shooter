@@ -27,21 +27,4 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Animation")
 	FGameplayTag FireNotifyTag;
 
-	//for Grenade Launcher
-	UFUNCTION(BlueprintCallable, Category = "Weapon|Projectile")
-	void SpawnProjectile(const FVector& ProjectileTargetLocation);
-
-	//for most weapons
-	UFUNCTION(BlueprintCallable, Category = "Weapon|Fire")
-	bool PerformHitscan(FHitResult& OutHit);
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Projectile")
-	TSubclassOf<AShooterProjectile> ProjectileClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Hitscan")
-	float HitscanRange = 1000.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Hitscan")
-	TEnumAsByte<ECollisionChannel> HitscanTraceChannel = ECC_Visibility;
-
 };

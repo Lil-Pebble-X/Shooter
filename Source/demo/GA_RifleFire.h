@@ -6,6 +6,8 @@
 #include "GA_WeaponFireBase.h"
 #include "GA_RifleFire.generated.h"
 
+
+class UNiagaraSystem;
 /**
  * 
  */
@@ -17,8 +19,29 @@ class DEMO_API UGA_RifleFire : public UGA_WeaponFireBase
 public:
 	UGA_RifleFire();
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon|Fire")
+	void FireHitscan();
+
+
+
 protected:
-	
 
+	void OnTargetDataReady(const FGameplayAbilityTargetDataHandle& DataHandle);
+	void ApplyDamageToTarget(AActor* TargetActor, const FHitResult& HitResult);
+	void PlayFireEffects(const FHitResult& HitResult);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Hitscan")
+	float HitscanRange = 1000.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Hitscan")
+	TEnumAsByte<ECollisionChannel> HitscanTraceChannel = ECC_Visibility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Effects")
+	TObjectPtr<UNiagaraSystem> ImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Effects")
+	TObjectPtr<USoundBase> ImpactSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Effects")
+	TObjectPtr<UNiagaraSystem> TracerEffect;
 };

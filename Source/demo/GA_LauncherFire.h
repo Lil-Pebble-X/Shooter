@@ -13,5 +13,16 @@ UCLASS()
 class DEMO_API UGA_LauncherFire : public UGA_WeaponFireBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	UGA_LauncherFire();
+
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon|Projectile")
+	void SpawnProjectile(const FVector& ProjectileTargetLocation);
+
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Projectile")
+	TSubclassOf<AShooterProjectile> ProjectileClass;
 };
