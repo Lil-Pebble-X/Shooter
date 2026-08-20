@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "AbilitySystemComponent.h"
 #include "TargetDataUnderCrosshair.h"
+#include "DrawDebugHelpers.h"
 
 
 UGA_RifleFire::UGA_RifleFire()
@@ -21,6 +22,7 @@ void UGA_RifleFire::FireHitscan()
 {
 	UTargetDataUnderCrosshair* Task = UTargetDataUnderCrosshair::CreateTargetDataUnderCrosshair(this);
 	Task->ValidData.AddDynamic(this, &UGA_RifleFire::OnTargetDataReady);
+	Task->ReadyForActivation();
 }
 
 void UGA_RifleFire::OnTargetDataReady(const FGameplayAbilityTargetDataHandle& DataHandle)
@@ -94,4 +96,8 @@ void UGA_RifleFire::PlayFireEffects(const FHitResult& HitResult)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TracerEffect, MuzzleLocation, TracerRotation);
 	}
+
+	// Debug laser beam: visualize the hit path while no tracer effect is assigned
+	DrawDebugLine(GetWorld(), MuzzleLocation, HitResult.Location, FColor::Red, false, 0.5f, 0, 2.f);
+	DrawDebugPoint(GetWorld(), HitResult.Location, 10.f, FColor::Red, false, 0.5f);
 }

@@ -26,7 +26,9 @@ public:
 
 protected:
 
+	UFUNCTION()
 	void OnTargetDataReady(const FGameplayAbilityTargetDataHandle& DataHandle);
+
 	void ApplyDamageToTarget(AActor* TargetActor, const FHitResult& HitResult);
 	void PlayFireEffects(const FHitResult& HitResult);
 
