@@ -19,17 +19,18 @@ class DEMO_API UGA_RifleFire : public UGA_WeaponFireBase
 public:
 	UGA_RifleFire();
 
-	UFUNCTION(BlueprintCallable, Category = "Weapon|Fire")
-	void FireHitscan();
-
-
-
 protected:
+
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	UFUNCTION()
 	void OnTargetDataReady(const FGameplayAbilityTargetDataHandle& DataHandle);
 
+	void StartTargeting();
+
 	void ApplyDamageToTarget(AActor* TargetActor, const FHitResult& HitResult);
+
 	void PlayFireEffects(const FHitResult& HitResult);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Hitscan")

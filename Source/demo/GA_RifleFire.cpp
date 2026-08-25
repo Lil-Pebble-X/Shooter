@@ -18,7 +18,14 @@ UGA_RifleFire::UGA_RifleFire()
     NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
 }
 
-void UGA_RifleFire::FireHitscan()
+void UGA_RifleFire::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	StartTargeting();
+}
+
+void UGA_RifleFire::StartTargeting()
 {
 	UTargetDataUnderCrosshair* Task = UTargetDataUnderCrosshair::CreateTargetDataUnderCrosshair(this);
 	Task->ValidData.AddDynamic(this, &UGA_RifleFire::OnTargetDataReady);
@@ -27,23 +34,35 @@ void UGA_RifleFire::FireHitscan()
 
 void UGA_RifleFire::OnTargetDataReady(const FGameplayAbilityTargetDataHandle& DataHandle)
 {
-	FHitResult HitResult;
-	if (const FGameplayAbilityTargetData_SingleTargetHit* Data =
-		static_cast<const FGameplayAbilityTargetData_SingleTargetHit*>(DataHandle.Get(0)))
+	const FGameplayAbilityTargetData_SingleTargetHit* Data =
+		static_cast<const FGameplayAbilityTargetData_SingleTargetHit*>(DataHandle.Get(0));
+	if (!Data)
 	{
-		HitResult = Data->HitResult;
+		return;
 	}
 
+	const FHitResult HitResult = Data->HitResult;
 	PlayFireEffects(HitResult);
 
-	if (GetAvatarActorFromActorInfo()->HasAuthority() && HitResult.GetActor())
+	if (HasAuthority(&CurrentActivationInfo))
 	{
-		ApplyDamageToTarget(HitResult.GetActor(), HitResult);
+		AActor* HitActor = HitResult.GetActor();
+		AActor* Avatar = GetAvatarActorFromActorInfo();
+
+		if (HitResult.bBlockingHit && HitActor && HitActor != Avatar &&
+			UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor))
+		{
+			ApplyDamageToTarget(HitActor, HitResult);
+		}
+
 	}
 }
 
+
 void UGA_RifleFire::ApplyDamageToTarget(AActor* TargetActor, const FHitResult& HitResult)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[Rifle] DamageTypes.Num()=%d"), DamageTypes.Num());
+
 	UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	if (!SourceASC || !TargetASC) return;
@@ -63,6 +82,7 @@ void UGA_RifleFire::ApplyDamageToTarget(AActor* TargetActor, const FHitResult& H
 
 	SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetASC);
 }
+
 
 void UGA_RifleFire::PlayFireEffects(const FHitResult& HitResult)
 {
