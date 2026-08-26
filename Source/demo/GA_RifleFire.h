@@ -21,23 +21,11 @@ public:
 
 protected:
 
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
-	UFUNCTION()
-	void OnTargetDataReady(const FGameplayAbilityTargetDataHandle& DataHandle);
-
-	void StartTargeting();
+	virtual bool ValidateTarget(const FHitResult& HitResult) const override;
+	virtual void OnLocalFireEffects(const FHitResult& HitResult) override;
+	virtual void OnServerFireResolved(const FHitResult& HitResult) override;
 
 	void ApplyDamageToTarget(AActor* TargetActor, const FHitResult& HitResult);
-
-	void PlayFireEffects(const FHitResult& HitResult);
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Hitscan")
-	float HitscanRange = 1000.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Hitscan")
-	TEnumAsByte<ECollisionChannel> HitscanTraceChannel = ECC_Visibility;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Effects")
 	TObjectPtr<UNiagaraSystem> ImpactEffect;

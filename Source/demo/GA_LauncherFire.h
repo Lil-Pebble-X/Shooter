@@ -23,6 +23,9 @@ public:
 
 protected:
 
+	virtual void OnServerFireResolved(const FHitResult& HitResult) override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Projectile")
 	TSubclassOf<AShooterProjectile> ProjectileClass;
+
 };

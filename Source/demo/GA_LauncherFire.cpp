@@ -15,8 +15,14 @@ UGA_LauncherFire::UGA_LauncherFire()
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
 }
 
+void UGA_LauncherFire::OnServerFireResolved(const FHitResult& HitResult)
+{
+	SpawnProjectile(HitResult.Location);
+}
+
 void UGA_LauncherFire::SpawnProjectile(const FVector& ProjectileTargetLocation)
 {
+	if (!ProjectileClass) return;
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!bIsServer) return;
 
