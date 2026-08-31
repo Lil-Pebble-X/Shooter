@@ -12,7 +12,8 @@
 #include "ShooterPlayerController.h"
 #include "GameFramework/Controller.h"
 #include "ShooterHUD.h"
-
+#include "Net/UnrealNetwork.h"
+#include "ShooterDamageGameplayAbility.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -20,10 +21,10 @@ AShooterCharacter::AShooterCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	
-	//Set Max Walk Speed
+	// Set Max Walk Speed
 	WalkSpeed = 150.0f;
 
-	//Set Max Sprint Speed
+	// Set Max Sprint Speed
 	SprintSpeed = 350.0f;
 
 	if (GetCharacterMovement())
@@ -50,6 +51,14 @@ void AShooterCharacter::BeginPlay()
 void AShooterCharacter::InitializeDefaultAttributes() const
 {
 	UShooterAbilitySystemLibrary::InitializeDefaultAttributes(this, ECharacterClass::Soldier, 1.f, AbilitySystemComponent);
+}
+
+void AShooterCharacter::OnRep_EquippedWeaponMesh()
+{
+	if (Weapon && ReplicatedWeaponMesh)
+	{
+		Weapon->SetSkeletalMesh(ReplicatedWeaponMesh);
+	}
 }
 
 void AShooterCharacter::HandleWeaponOnDeath()
@@ -86,17 +95,18 @@ void AShooterCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	//Init ability actor info for the  Server
+	// Init ability actor info for the  Server
 	InitAbilityActorInfo();
 	AddCharacterAbilities();
 	InitializeDefaultAttributes();
+	EquipWeapon(InitialFireAbility, InitialWeaponMesh, WeaponTipSocketName);
 }
 
 void AShooterCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	//Init ability actor info for the  Client
+	// Init ability actor info for the  Client
 	InitAbilityActorInfo();
 }
 
@@ -147,10 +157,64 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		}
 	}
 
-	//Set up action binding
+	// Set up action binding
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		//Sprint
+		// Sprint
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AShooterCharacter::Action_Sprint);
+	}
+
+}
+
+void AShooterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AShooterCharacter, WeaponTipSocketName);
+	DOREPLIFETIME(AShooterCharacter, ReplicatedWeaponMesh);
+}
+
+void AShooterCharacter::EquipWeapon(TSubclassOf<UGameplayAbility> FireAbilityClass, USkeletalMesh* NewWeaponMesh, FName TipSocket)
+{
+
+
+	if (!AbilitySystemComponent || !FireAbilityClass) return;
+
+	if (EquippedFireAbilityClass == FireAbilityClass) return;
+
+	// Delete Old Weapon Fire Ability
+	if (EquippedFireAbilityHandle.IsValid())
+	{
+		AbilitySystemComponent->CancelAbilityHandle(EquippedFireAbilityHandle);
+
+		AbilitySystemComponent->ClearAbility(EquippedFireAbilityHandle);
+
+		EquippedFireAbilityHandle = FGameplayAbilitySpecHandle();
+	}
+
+	// Grant New Fire Ability
+	FGameplayAbilitySpec Spec(FireAbilityClass, 1);
+	if (const UShooterGameplayAbility* ShooterAbility = Cast<UShooterGameplayAbility>(Spec.Ability))
+	{
+		Spec.GetDynamicSpecSourceTags().AddTag(ShooterAbility->StartupInputTag);
+	}
+	EquippedFireAbilityHandle = AbilitySystemComponent->GiveAbility(Spec);
+	EquippedFireAbilityClass = FireAbilityClass;
+
+
+	// Swap Weapon Mesh 
+	if (Weapon && NewWeaponMesh)
+	{
+		Weapon->SetSkeletalMesh(NewWeaponMesh);
+		WeaponTipSocketName = TipSocket;
+	}
+
+	if (NewWeaponMesh)
+	{
+		ReplicatedWeaponMesh = NewWeaponMesh;   // Replicate to Client
+		if (Weapon)
+		{
+			Weapon->SetSkeletalMesh(NewWeaponMesh);  
+		}
+		WeaponTipSocketName = TipSocket;
 	}
 }

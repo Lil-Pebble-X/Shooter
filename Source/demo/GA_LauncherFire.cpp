@@ -64,5 +64,6 @@ void UGA_LauncherFire::SpawnProjectile(const FVector& ProjectileTargetLocation)
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 
 		Projectile->FinishSpawning(SpawnTransform);
+
 	}
 }

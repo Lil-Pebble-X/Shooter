@@ -37,19 +37,33 @@ public:
 
 	virtual FVector GetCombatSocketLocation() override;
 
+	void EquipWeapon(TSubclassOf<UGameplayAbility> FireAbilityClass, USkeletalMesh* NewWeaponMesh, FName TipSocket);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	virtual void InitializeDefaultAttributes() const override;
+	
+	UFUNCTION()
+	void OnRep_EquippedWeaponMesh();
+
+	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeaponMesh)
+	TObjectPtr<USkeletalMesh> ReplicatedWeaponMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, Replicated, Category = "Combat")
 	FName WeaponTipSocketName;
 
 	virtual void HandleWeaponOnDeath() override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	TSubclassOf<UGameplayAbility> InitialFireAbility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	TObjectPtr<USkeletalMesh> InitialWeaponMesh;
 private:	
 	//input system
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
@@ -60,6 +74,9 @@ private:
 
 	//Input Action Function
 	void Action_Sprint(const FInputActionValue& Value);
+
+	FGameplayAbilitySpecHandle EquippedFireAbilityHandle;
+	TSubclassOf<UGameplayAbility> EquippedFireAbilityClass;
 
 	virtual void InitAbilityActorInfo() override;
 };
