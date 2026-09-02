@@ -26,9 +26,6 @@ public:
 	AZombieCharacter();
 	
 	virtual void PossessedBy(AController* NewController) override;
-	
-	//old
-	void Scratch();
 
 	/** Zombie Interface */
 	virtual void HighlightActor() override;
@@ -37,6 +34,8 @@ public:
 
 	/** Combat Interface*/
 	virtual void Die() override;
+	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
 	/** end Combat Interface */ 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -50,15 +49,11 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChanged;
 
-	// Attack
-	UPROPERTY(BlueprintReadOnly, Category = "Combat")
-	bool IsAttack;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	float LifeSpan = 5.f;
 
-	UFUNCTION(BlueprintPure)
-	bool FinishAttack() const;
+	UPROPERTY(BlueprintReadWrite, Category = "Combat")
+	TObjectPtr<AActor> CombatTarget;
 protected:
 	virtual void BeginPlay() override;
 

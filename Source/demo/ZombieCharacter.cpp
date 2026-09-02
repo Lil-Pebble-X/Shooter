@@ -24,8 +24,6 @@ AZombieCharacter::AZombieCharacter()
 	
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
-	IsAttack = false;
-
 	AbilitySystemComponent = CreateDefaultSubobject<UBaseAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
@@ -52,18 +50,6 @@ void AZombieCharacter::PossessedBy(AController* NewController)
 	ZombieAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Zombie);
 }
 
-void AZombieCharacter::Scratch()
-{
-	IsAttack = true;
-
-	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
-		{
-			IsAttack = false;
-		}, 1.0f, false);
-
-}
-
 void AZombieCharacter::HighlightActor()
 {
 	GetMesh()->SetRenderCustomDepth(true);	
@@ -76,11 +62,6 @@ void AZombieCharacter::UnHighlightActor()
 	GetMesh()->SetRenderCustomDepth(false);	
 }
 
- bool AZombieCharacter::FinishAttack() const
-{
-	return  IsAttack;
-}
-
 // Called when the game starts or when spawned
 void AZombieCharacter::BeginPlay()
 {
@@ -89,7 +70,7 @@ void AZombieCharacter::BeginPlay()
 	if (HasAuthority())
 	{
 		InitAbilityActorInfo();
-		UShooterAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+		UShooterAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
 	}
 
 	if (UShooterUserWidget* ShooterUserWidget = Cast<UShooterUserWidget>(HealthBar->GetUserWidgetObject()))
@@ -138,6 +119,16 @@ void AZombieCharacter::Die()
 {
 	SetLifeSpan(LifeSpan);
 	Super::Die();
+}
+
+void AZombieCharacter::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+AActor* AZombieCharacter::GetCombatTarget_Implementation() const
+{
+	return CombatTarget;
 }
 
 // Called every frame
