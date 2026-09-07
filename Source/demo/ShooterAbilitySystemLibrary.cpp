@@ -10,6 +10,8 @@
 #include "KillEmAllGameMode.h"
 #include "AbilitySystemComponent.h"
 #include "CombatInterface.h"
+
+#include "Engine/OverlapResult.h"
 #include "ShooterAbilityTypes.h"
 
 UOverlayWidgetController* UShooterAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
@@ -108,6 +110,29 @@ bool UShooterAbilitySystemLibrary::IsCriticalHit(const FGameplayEffectContextHan
 		return ShooterEffectContext->IsCriticalHit();
 	}
 	return false;
+}
+
+void UShooterAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin)
+{
+	FCollisionQueryParams SphereParams;
+	SphereParams.AddIgnoredActors(ActorsToIgnore);
+
+	TArray<FOverlapResult> Overlaps;
+	if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		World->OverlapMultiByObjectType(Overlaps, SphereOrigin, FQuat::Identity, FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), FCollisionShape::MakeSphere(Radius), SphereParams);
+		for (FOverlapResult& Overlap : Overlaps)
+		{
+			const bool ImplementsCombatInterface = Overlap.GetActor()->Implements<UCombatInterface>();
+			const bool IsAlive = !ICombatInterface::Execute_IsDead(Overlap.GetActor());
+			if (ImplementsCombatInterface && IsAlive)
+			{
+				OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
+
+			}
+		}
+	}
+
 }
 
 void UShooterAbilitySystemLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& EffectContextHandle, bool bInIsCriticalHit)

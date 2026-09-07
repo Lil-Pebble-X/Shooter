@@ -31,7 +31,7 @@ void UGA_RifleFire::OnLocalFireEffects(const FHitResult& HitResult)
 	FVector MuzzleLocation = HitResult.Location;
 	if (CombatInterface)
 	{
-		MuzzleLocation = FVector(CombatInterface->GetCombatSocketLocation());
+		MuzzleLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo());
 	}
 
 	const FVector TraceDirection = (HitResult.Location - MuzzleLocation).GetSafeNormal();

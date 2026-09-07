@@ -66,6 +66,7 @@ void ABaseCharacter::MulticastHandleDeath_Implementation()
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	bDead = true;
 }
 
 void ABaseCharacter::HandleWeaponOnDeath()
@@ -103,4 +104,19 @@ void ABaseCharacter::AddCharacterAbilities()
 	if (!HasAuthority()) return;
 
 	ShooterASC->AddCharacterAbilities(StartupAbilities);
+}
+
+FVector ABaseCharacter::GetCombatSocketLocation_Implementation()
+{
+	return GetActorLocation() + GetActorForwardVector() * 10.f;
+}
+
+bool ABaseCharacter::IsDead_Implementation() const
+{
+	return bDead;
+}
+
+AActor* ABaseCharacter::GetAvatar_Implementation() 
+{
+	return this;
 }

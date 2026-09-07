@@ -69,7 +69,7 @@ void AShooterCharacter::HandleWeaponOnDeath()
 
 }
 
-FVector AShooterCharacter::GetCombatSocketLocation()
+FVector AShooterCharacter::GetCombatSocketLocation_Implementation()
 {
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
