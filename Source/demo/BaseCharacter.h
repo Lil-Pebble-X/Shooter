@@ -45,6 +45,9 @@ protected:
 	UFUNCTION()
 	virtual void HandleWeaponOnDeath();
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attributes")
+	TSubclassOf<UGameplayEffect> DeadEffectClass;
+
 	//Walking Speed
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat")
 	float WalkSpeed = 150.0f;;

@@ -123,9 +123,7 @@ void UShooterAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* Wor
 		World->OverlapMultiByObjectType(Overlaps, SphereOrigin, FQuat::Identity, FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), FCollisionShape::MakeSphere(Radius), SphereParams);
 		for (FOverlapResult& Overlap : Overlaps)
 		{
-			const bool ImplementsCombatInterface = Overlap.GetActor()->Implements<UCombatInterface>();
-			const bool IsAlive = !ICombatInterface::Execute_IsDead(Overlap.GetActor());
-			if (ImplementsCombatInterface && IsAlive)
+			if (Overlap.GetActor()->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(Overlap.GetActor()))
 			{
 				OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
 

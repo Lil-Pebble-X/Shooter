@@ -145,3 +145,8 @@ void AZombieCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 }
 
+int32 AZombieCharacter::GetPlayerLevel()
+{
+	return Level;
+}
+

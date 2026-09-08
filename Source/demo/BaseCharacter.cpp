@@ -7,6 +7,9 @@
 #include "AbilitySystemComponent.h"
 #include "BaseAbilitySystemComponent.h"
 #include "ShooterGameModeBase.h"
+#include "BrainComponent.h"
+#include "ShooterGameplayTags.h"
+#include "AIController.h"
 #include "Components/CapsuleComponent.h"
 
 // Sets default values
@@ -53,6 +56,24 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void ABaseCharacter::Die()
 {
 	MulticastHandleDeath();
+
+	if (HasAuthority())
+	{
+		if (AbilitySystemComponent)
+		{
+			AbilitySystemComponent->CancelAllAbilities();
+			ApplyEffectToSelf(DeadEffectClass, 1.f);
+		}
+
+
+		if (AAIController* AIC = Cast<AAIController>(GetController()))
+		{
+			if (UBrainComponent* Brain = AIC->GetBrainComponent())
+			{
+				Brain->StopLogic("CharacterDied");
+			}
+		}
+	}
 }
 
 void ABaseCharacter::MulticastHandleDeath_Implementation()
