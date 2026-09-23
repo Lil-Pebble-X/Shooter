@@ -42,6 +42,7 @@ public:
 	FGameplayTag InputTag_1;
 	FGameplayTag InputTag_2;
 	FGameplayTag InputTag_3;
+	FGameplayTag InputTag_Sprint;
 
 	FGameplayTag Damage;
 	FGameplayTag Damage_Fire;
@@ -49,7 +50,13 @@ public:
 	FGameplayTag Damage_Lightning;
 	FGameplayTag Damage_Physical;
 
+	FGameplayTag Status_Burning;
+	FGameplayTag Status_Shock;
+	FGameplayTag Status_Chilled;
+
 	FGameplayTag Abilities_Attack;
+
+	FGameplayTag GameplayCue_Weapon_Impact;
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
 

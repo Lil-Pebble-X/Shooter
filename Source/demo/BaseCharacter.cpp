@@ -10,6 +10,7 @@
 #include "BrainComponent.h"
 #include "ShooterGameplayTags.h"
 #include "AIController.h"
+#include "BaseAttributeSet.h"
 #include "Components/CapsuleComponent.h"
 
 // Sets default values
@@ -32,13 +33,6 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Set Max Speed
-	if (GetCharacterMovement())
-	{
-		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	}
-
-	GameHasStarted = true;
 }
 
 // Called every frame
@@ -140,4 +134,25 @@ bool ABaseCharacter::IsDead_Implementation() const
 AActor* ABaseCharacter::GetAvatar_Implementation() 
 {
 	return this;
+}
+
+void ABaseCharacter::OnSpeedChanged(const FOnAttributeChangeData& Data)
+{
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+	}
+}
+
+void ABaseCharacter::BindAttributeDelegates()
+{
+	if (!AbilitySystemComponent || !AttributeSet || !GetCharacterMovement()) return;
+
+	const UBaseAttributeSet* ShooterAS = Cast<UBaseAttributeSet>(AttributeSet);
+
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(ShooterAS->GetSpeedAttribute())
+	.AddUObject(this, &ABaseCharacter::OnSpeedChanged);
+
+	GetCharacterMovement()->MaxWalkSpeed = ShooterAS->GetSpeed();
+	
 }

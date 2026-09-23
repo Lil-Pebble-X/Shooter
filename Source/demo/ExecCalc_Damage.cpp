@@ -21,6 +21,7 @@ struct ShooterDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(IceResistance);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(PhysicalResistance);
 
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Vulnerability);
 
 	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDefs;
 
@@ -35,6 +36,8 @@ struct ShooterDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBaseAttributeSet, LightningResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBaseAttributeSet, IceResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UBaseAttributeSet, PhysicalResistance, Target, false);
+
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UBaseAttributeSet, Vulnerability, Target, false);
 
 		const FShooterGameplayTags& Tags = FShooterGameplayTags::Get();
 		TagsToCaptureDefs.Add(Tags.Attributes_Primary_CritRate, CritRateDef);
@@ -65,6 +68,8 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(DamageStatics().LightningResistanceDef);
 	RelevantAttributesToCapture.Add(DamageStatics().IceResistanceDef);
 	RelevantAttributesToCapture.Add(DamageStatics().PhysicalResistanceDef);
+
+	RelevantAttributesToCapture.Add(DamageStatics().VulnerabilityDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -122,6 +127,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
 	UShooterAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCriticalHit);
+
+	float TargetVulnerability = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().VulnerabilityDef, EvaluationParameters, TargetVulnerability);
+	TargetVulnerability = FMath::Max<float>(TargetVulnerability, 0.f);
+	Damage *= (1.f + TargetVulnerability);
 
 	if (bCriticalHit)
 	{

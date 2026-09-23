@@ -85,14 +85,18 @@ void FShooterGameplayTags::InitializeNativeGameplayTags()
 		FString("Input Tag for Number 3 Key")
 	);
 
-	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Damage"),
-		FString("Damage")
+	GameplayTags.InputTag_Sprint = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.Sprint"),
+		FString("Input Tag for Shift")
 	);
 
 	/*
 	*   DamageTypes
 	*/
+	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage"),
+		FString("Damage")
+	);
 
 	GameplayTags.Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage.Fire"),
@@ -139,6 +143,25 @@ void FShooterGameplayTags::InitializeNativeGameplayTags()
 	);
 
 	/*
+	* Status Effects
+	*/
+
+	GameplayTags.Status_Burning = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Status.Burning"),
+		FString("Burning Status Effect")
+	);
+
+	GameplayTags.Status_Shock = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Status.Shock"),
+		FString("Shock Status Effect")
+	);
+
+	GameplayTags.Status_Chilled = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Status.Chilled"),
+		FString("Chilled Status Effect")
+	);
+
+	/*
 	*   Battle
 	*/
 
@@ -167,5 +190,13 @@ void FShooterGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Attack"),
 		FString("Attack Ability Tag")
+	);
+
+	/*
+	* Cue
+	*/
+	GameplayTags.GameplayCue_Weapon_Impact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.Weapon.Impact"),
+		FString("Weapon Cue")
 	);
 }

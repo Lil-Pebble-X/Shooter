@@ -38,8 +38,8 @@ void UGA_LauncherFire::SpawnProjectile(const FVector& ProjectileTargetLocation)
 
 		AShooterProjectile* Projectile = GetWorld()->SpawnActorDeferred<AShooterProjectile>(
 			ProjectileClass, SpawnTransform,
-			GetOwningActorFromActorInfo(),
-			Cast<APawn>(GetOwningActorFromActorInfo()),
+			GetAvatarActorFromActorInfo(), 
+			Cast<APawn>(GetAvatarActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
@@ -61,7 +61,14 @@ void UGA_LauncherFire::SpawnProjectile(const FVector& ProjectileTargetLocation)
 			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
 		}
 
+		FGameplayEffectSpecHandle StatusSpecHandle;
+		if (OnHitStatusEffect)
+		{
+			StatusSpecHandle = SourceASC->MakeOutgoingSpec(OnHitStatusEffect, GetAbilityLevel(), EffectContextHandle);
+		}
+
 		Projectile->DamageEffectSpecHandle = SpecHandle;
+		Projectile->StatusEffectSpecHandle = StatusSpecHandle;
 
 		Projectile->FinishSpawning(SpawnTransform);
 

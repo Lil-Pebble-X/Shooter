@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "CombatInterface.h"
 #include "GameplayEffect.h"
+#include "AbilitySystemComponent.h"
 #include "BaseCharacter.generated.h"
 
 class UAbilitySystemComponent;
@@ -47,14 +48,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> DeadEffectClass;
-
-	//Walking Speed
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat")
-	float WalkSpeed = 150.0f;;
-
-	//Running Speed
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat")
-	float SprintSpeed= 350.0f; ;
 	
 	bool bDead = false;
 
@@ -84,6 +77,9 @@ protected:
 	virtual AActor* GetAvatar_Implementation() override;
 	/** end Combat Interface*/
 
+	void OnSpeedChanged(const FOnAttributeChangeData& Data);
+
+	void BindAttributeDelegates();
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")

@@ -20,17 +20,6 @@ AShooterCharacter::AShooterCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	
-	// Set Max Walk Speed
-	WalkSpeed = 150.0f;
-
-	// Set Max Sprint Speed
-	SprintSpeed = 350.0f;
-
-	if (GetCharacterMovement())
-	{
-		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	}
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
@@ -73,22 +62,6 @@ FVector AShooterCharacter::GetCombatSocketLocation_Implementation()
 {
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
-}
-
-void AShooterCharacter::Action_Sprint(const FInputActionValue& Value)
-{
-	float MaxSpeed = GetCharacterMovement()->MaxWalkSpeed;
-	if (GetCharacterMovement())
-	{
-		if (MaxSpeed == SprintSpeed)
-		{
-			GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-		}
-		else
-		{
-			GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-		}
-	}
 }
 
 void AShooterCharacter::PossessedBy(AController* NewController)
@@ -134,6 +107,7 @@ void AShooterCharacter::InitAbilityActorInfo()
 			ShooterHUD->InitOverlay(ShooterPlayerController, ShooterPlayerState, AbilitySystemComponent, AttributeSet);
 		}
 	}
+	BindAttributeDelegates();
 }
 
 
@@ -156,14 +130,6 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 			EnhancedInputLocalPlayerSubsystem->AddMappingContext(InputMappingContext, 0);
 		}
 	}
-
-	// Set up action binding
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		// Sprint
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AShooterCharacter::Action_Sprint);
-	}
-
 }
 
 void AShooterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

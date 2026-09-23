@@ -66,7 +66,6 @@ void AZombieCharacter::UnHighlightActor()
 void AZombieCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	if (HasAuthority())
 	{
 		InitAbilityActorInfo();
@@ -108,6 +107,7 @@ void AZombieCharacter::InitAbilityActorInfo()
 	{
 		InitializeDefaultAttributes();
 	}
+	BindAttributeDelegates();
 }
 
 void AZombieCharacter::InitializeDefaultAttributes() const

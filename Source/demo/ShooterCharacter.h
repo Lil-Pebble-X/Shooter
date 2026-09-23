@@ -69,12 +69,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 
-	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
-	TObjectPtr<UInputAction> SprintAction;
-
-	//Input Action Function
-	void Action_Sprint(const FInputActionValue& Value);
-
 	FGameplayAbilitySpecHandle EquippedFireAbilityHandle;
 	TSubclassOf<UGameplayAbility> EquippedFireAbilityClass;
 

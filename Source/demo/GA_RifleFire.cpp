@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "AbilitySystemComponent.h"
 #include "TargetDataUnderCrosshair.h"
-#include "DrawDebugHelpers.h"
+#include "BaseAttributeSet.h"
 
 
 UGA_RifleFire::UGA_RifleFire()
@@ -47,7 +47,25 @@ void UGA_RifleFire::OnLocalFireEffects(const FHitResult& HitResult)
 
 void UGA_RifleFire::OnServerFireResolved(const FHitResult& HitResult)
 {
+	AActor* TargetActor = HitResult.GetActor();
+	if (!TargetActor) return;
+
 	ApplyDamageToTarget(HitResult.GetActor(), HitResult);
+
+	if (OnHitStatusEffect)
+	{
+		UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+
+		if (SourceASC && TargetASC)
+		{
+			FGameplayEffectContextHandle StatusContext = SourceASC->MakeEffectContext();
+			StatusContext.AddSourceObject(GetAvatarActorFromActorInfo());
+
+			TargetASC->ApplyGameplayEffectToSelf(
+				OnHitStatusEffect->GetDefaultObject<UGameplayEffect>(), 1.f, StatusContext);
+		}
+	}
 }
 
 void UGA_RifleFire::ApplyDamageToTarget(AActor* TargetActor, const FHitResult& HitResult)

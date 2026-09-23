@@ -146,6 +146,14 @@ public:
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, IncomingDamage);
 
+	/*
+	* Debuff Attributes
+	*/
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Vulnerability, Category = "Debuff Attributes")
+	FGameplayAttributeData Vulnerability; 
+	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Vulnerability);
+
 	//
 	UFUNCTION()
 	void OnRep_ElementalMastery(const FGameplayAttributeData& OldElementalMastery) const;
@@ -190,6 +198,10 @@ public:
 
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
+
+	//
+	UFUNCTION()
+	void OnRep_Vulnerability(const FGameplayAttributeData& OldVulnerability) const;
 
 private:
 

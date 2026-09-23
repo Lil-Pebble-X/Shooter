@@ -59,6 +59,10 @@ void UBaseAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	//
 	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, Shield, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, Health, COND_None, REPNOTIFY_Always);
+
+	//
+	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, Vulnerability, COND_None, REPNOTIFY_Always);
+
 }
 
 void UBaseAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -79,6 +83,11 @@ void UBaseAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxCritRate());
 	}
+
+	if (Attribute == GetVulnerabilityAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, 2.f); 
+	}
 }
 
 void UBaseAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
@@ -96,6 +105,11 @@ void UBaseAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribu
 	if (Attribute == GetCritRateAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxCritRate());
+	}
+
+	if (Attribute == GetVulnerabilityAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, 2.f); 
 	}
 }
 
@@ -285,4 +299,10 @@ void UBaseAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) co
 void UBaseAttributeSet::OnRep_Shield(const FGameplayAttributeData& OldShield) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, Shield, OldShield);
+}
+
+//
+void UBaseAttributeSet::OnRep_Vulnerability(const FGameplayAttributeData& OldVulnerability) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, Vulnerability, OldVulnerability);
 }

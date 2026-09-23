@@ -18,4 +18,6 @@ void UShooterAssetManager::StartInitialLoading()
 	Super::StartInitialLoading();
 
 	FShooterGameplayTags::InitializeNativeGameplayTags();
+
+	UAbilitySystemGlobals::Get().InitGlobalData();
 }

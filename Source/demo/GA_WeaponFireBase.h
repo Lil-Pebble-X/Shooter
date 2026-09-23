@@ -37,4 +37,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Animation")
 	FGameplayTag FireNotifyTag;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Effects")
+	TSubclassOf<UGameplayEffect> OnHitStatusEffect;
+
 };

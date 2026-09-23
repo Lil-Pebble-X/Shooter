@@ -10,6 +10,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ShooterGameplayTags.h"
+#include "TimerManager.h"
 #include "AbilitySystemComponent.h"
 
 AShooterProjectile::AShooterProjectile()
@@ -50,13 +52,6 @@ void AShooterProjectile::BeginPlay()
 
 void AShooterProjectile::Destroyed()
 {
-	if (!bHit && !HasAuthority())
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-		//LoopingSoundComponent->Stop();
-	}
-
 	Super::Destroyed();
 }
 
@@ -70,20 +65,54 @@ void AShooterProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponen
 	if (bHit) return;
 	bHit = true;
 
-	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-	//if (LoopingSoundComponent) LoopingSoundComponent->Stop();
+	if (!HasAuthority()) return;
 
-	if (HasAuthority())
+	ScheduleImpactCue();
+
+	if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 	{
+		TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
 
-		if (UAbilitySystemComponent* TargetASC =  UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+		if (StatusEffectSpecHandle.IsValid())
 		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+			TargetASC->ApplyGameplayEffectSpecToSelf(*StatusEffectSpecHandle.Data.Get());
 		}
-
-
-		Destroy();
 	}
+
+	Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	if (ProjectileMovement) { ProjectileMovement->StopMovementImmediately(); }
+	SetLifeSpan(0.15f);
 }
 
+void AShooterProjectile::ScheduleImpactCue()
+{
+	UAbilitySystemComponent* SourceASC = nullptr;
+	if (DamageEffectSpecHandle.Data.IsValid())
+	{
+		SourceASC = DamageEffectSpecHandle.Data->GetContext().GetInstigatorAbilitySystemComponent();
+	}
+	if (!SourceASC)
+	{
+		SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwner());
+	}
+	if (!SourceASC) return;
+
+	const FVector CueLocation = GetActorLocation();
+	const FVector CueNormal = GetActorForwardVector();
+	AActor* Avatar = SourceASC->GetAvatarActor();
+	TWeakObjectPtr<UAbilitySystemComponent> WeakASC = SourceASC;
+
+	GetWorldTimerManager().SetTimerForNextTick([WeakASC, CueLocation, CueNormal, Avatar]()
+		{
+			UAbilitySystemComponent* ASC = WeakASC.Get();
+			if (!ASC) return;
+
+			FGameplayCueParameters CueParams;
+			CueParams.Location = CueLocation;
+			CueParams.Normal = CueNormal;
+			CueParams.Instigator = Avatar;
+			CueParams.EffectCauser = Avatar;  
+
+			ASC->ExecuteGameplayCue(FShooterGameplayTags::Get().GameplayCue_Weapon_Impact, CueParams);
+		});
+}
