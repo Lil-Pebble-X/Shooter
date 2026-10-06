@@ -23,4 +23,19 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FBlackboardKeySelector DistanceToTargetSelector;
+
+	//Perception Parameters 
+	UPROPERTY(EditAnywhere, Category = "Perception")
+	float SightRadius = 1500.f;
+
+	UPROPERTY(EditAnywhere, Category = "Perception")
+	bool bRequireLineOfSight = true;
+
+	UPROPERTY(EditAnywhere, Category = "Perception")
+	float EyeHeightOffset = 60.f;
+
+	UPROPERTY(EditAnywhere, Category = "Perception")
+	TEnumAsByte<ECollisionChannel> SightTraceChannel = ECC_Visibility;
+
+	bool CanSeeTarget(const APawn* OwningPawn, const AActor* Target) const;
 };
