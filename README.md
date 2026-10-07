@@ -12,7 +12,7 @@
 
 | 分类 | 内容 |
 |---|---|
-| 引擎 / 语言 | Unreal Engine 5.7 / C++（42 个类 / 90 个源文件） |
+| 引擎 / 语言 | Unreal Engine 5.7 / C++ |
 | Gameplay | GameplayAbilitySystem（ASC / AttributeSet / GA / GE / ExecCalc / GameplayCue） |
 | 输入 | Enhanced Input + GameplayTags |
 | AI | BehaviorTree + Blackboard + NavMesh + 视线遮挡检测 |
