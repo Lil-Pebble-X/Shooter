@@ -49,6 +49,12 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	}
 	UBTFunctionLibrary::SetBlackboardValueAsObject(this, TargetToFollowSelector, ClosestActor);
 	UBTFunctionLibrary::SetBlackboardValueAsFloat(this, DistanceToTargetSelector, ClosestDistance);
+	
+	if (ClosestActor)
+	{
+		UBTFunctionLibrary::SetBlackboardValueAsVector(
+			this, LastKnownLocationSelector, ClosestActor->GetActorLocation());
+	}
 }
 
 bool UBTService_FindNearestPlayer::CanSeeTarget(const APawn* OwningPawn, const AActor* Target) const

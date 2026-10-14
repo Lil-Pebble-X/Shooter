@@ -128,15 +128,15 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
 	UShooterAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCriticalHit);
 
-	float TargetVulnerability = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().VulnerabilityDef, EvaluationParameters, TargetVulnerability);
-	TargetVulnerability = FMath::Max<float>(TargetVulnerability, 0.f);
-	Damage *= (1.f + TargetVulnerability);
-
 	if (bCriticalHit)
 	{
 		Damage = Damage * (SourceCritDmg * 0.01f);
 	}
+
+	float TargetVulnerability = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().VulnerabilityDef, EvaluationParameters, TargetVulnerability);
+	TargetVulnerability = FMath::Max<float>(TargetVulnerability, 0.f);
+	Damage *= (1.f + TargetVulnerability);
 
 	float SourceAttackPower = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().AttackPowerDef, EvaluationParameters, SourceAttackPower);

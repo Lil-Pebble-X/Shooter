@@ -47,7 +47,12 @@ void AZombieCharacter::PossessedBy(AController* NewController)
 	ZombieAIController = Cast<AZombieAIController>(NewController);
 	if (!ZombieAIController || !BehaviorTree) return;
 	ZombieAIController->RunBehaviorTree(BehaviorTree);
-	ZombieAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Zombie);
+
+	if (UBlackboardComponent* BB = ZombieAIController->GetBlackboardComponent())
+	{
+		BB->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Zombie);
+		BB->SetValueAsVector(FName("HomeLocation"), GetActorLocation());   // ¡û ÐÂÔö
+	}
 }
 
 void AZombieCharacter::HighlightActor()

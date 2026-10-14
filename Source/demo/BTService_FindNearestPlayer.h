@@ -37,5 +37,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Perception")
 	TEnumAsByte<ECollisionChannel> SightTraceChannel = ECC_Visibility;
 
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector LastKnownLocationSelector;
+
 	bool CanSeeTarget(const APawn* OwningPawn, const AActor* Target) const;
 };

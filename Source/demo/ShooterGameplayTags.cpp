@@ -21,11 +21,6 @@ void FShooterGameplayTags::InitializeNativeGameplayTags()
 		FString("Maximum chance to deal extra damage")
 	);
 
-	GameplayTags.Attributes_Primary_ElementalMastery = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Primary.ElementalMastery"),
-		FString("Increases corresponding attribute")
-	);
-
 	GameplayTags.Attributes_Primary_CritDmg = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Primary.CritDmg"),
 		FString("Bonus damage on critical hit")
