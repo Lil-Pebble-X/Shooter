@@ -2,6 +2,7 @@
 
 
 #include "AttributeInfo.h"
+#include "ShooterLogChannels.h"
 
 FShooterAttributeInfo UAttributeInfo::FindAttributeInfoForTag(const FGameplayTag& AttributeTag, bool bLogNotFound) const
 {
@@ -15,7 +16,7 @@ FShooterAttributeInfo UAttributeInfo::FindAttributeInfoForTag(const FGameplayTag
 
 	if (bLogNotFound)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Can't find Info for AttributeTag [%s] on AttributeInfo [%s]."), *AttributeTag.ToString(), *GetNameSafe(this))
+		UE_LOG(LogShooter, Error, TEXT("Can't find Info for AttributeTag [%s] on AttributeInfo [%s]."), *AttributeTag.ToString(), *GetNameSafe(this))
 	}
 
 	return FShooterAttributeInfo();
