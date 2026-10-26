@@ -50,10 +50,6 @@ bool ULoadoutSubsystem::GetLoadoutForPlayerState(APlayerState* InPlayerState, FS
 	if (OutLoad)
 	{
 		OutLoadout = *OutLoad;
-		UE_LOG(LogShooter, Log, TEXT("[LD] GetLoadout: key=%s, Primary=%s, Secondary=%s"),
-			*PlayerKey,
-			*GetNameSafe(OutLoad->PrimaryWeapon),
-			*GetNameSafe(OutLoad->SecondaryWeapon));
 
 		return true;
 	}

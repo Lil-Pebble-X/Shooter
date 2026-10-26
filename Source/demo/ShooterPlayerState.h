@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
+#include "ShooterLoadout.h"
 #include "ShooterPlayerState.generated.h"
 
 class UAbilitySystemComponent;
@@ -25,6 +26,11 @@ public:
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 	FORCEINLINE int32 GetPlayerLevel() const { return Level; }
+
+	UFUNCTION(BlueprintCallable, Category = "Loadout")
+	void SetLoadout(const FShooterLoadout& InLoadout);
+
+	const FShooterLoadout& GetLoadout() const { return Loadout; }
 protected:
 
 	UPROPERTY(VisibleAnywhere)
@@ -40,4 +46,10 @@ private:
 
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
+
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Loadout)
+	FShooterLoadout Loadout;
+
+	UFUNCTION()
+	void OnRep_Loadout();
 };

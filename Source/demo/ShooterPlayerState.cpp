@@ -4,6 +4,7 @@
 #include "ShooterPlayerState.h"
 #include "BaseAttributeSet.h"
 #include "Net/UnrealNetwork.h"
+#include "ShooterLogChannels.h"
 #include "BaseAbilitySystemComponent.h"
 
 
@@ -23,7 +24,7 @@ void AShooterPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AShooterPlayerState, Level);
-
+	DOREPLIFETIME(AShooterPlayerState, Loadout);
 
 }
 
@@ -32,6 +33,35 @@ UAbilitySystemComponent* AShooterPlayerState::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+void AShooterPlayerState::SetLoadout(const FShooterLoadout& InLoadout)
+{
+	if (!HasAuthority()) return;
+
+	Loadout = InLoadout;
+
+	const FString Key = GetUniqueId().IsValid()
+		? GetUniqueId()->ToString()
+		: GetPlayerName();
+
+	UE_LOG(LogShooter, Log, TEXT("[LD]SetLoadout[%s]: Primary=%s, Secondary=%s"),
+		*Key,
+		*GetNameSafe(Loadout.PrimaryWeapon),
+		*GetNameSafe(Loadout.SecondaryWeapon));
+}
+
 void AShooterPlayerState::OnRep_Level(int32 OldLevel)
 {
+}
+
+void AShooterPlayerState::OnRep_Loadout()
+{
+	const FString Key = GetUniqueId().IsValid()
+		? GetUniqueId()->ToString()
+		: GetPlayerName();
+
+	UE_LOG(LogShooter, Log, TEXT("[LD]OnRep_Loadout[%s]: Primary=%s, Secondary=%s"),
+		*Key,
+		*GetNameSafe(Loadout.PrimaryWeapon),
+		*GetNameSafe(Loadout.SecondaryWeapon));
+
 }
