@@ -1,10 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Templates/SubclassOf.h"
+#include "ShooterWeaponData.h"
 #include "ShooterLoadout.generated.h"
-
-class UGameplayAbility;
 
 USTRUCT(BlueprintType)
 struct FShooterLoadout
@@ -12,5 +10,8 @@ struct FShooterLoadout
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Loadout")
-	TSubclassOf<UGameplayAbility> PrimaryWeaponAbility;
+	TObjectPtr<UShooterWeaponData> PrimaryWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Loadout")
+	TObjectPtr<UShooterWeaponData> SecondaryWeapon;
 };

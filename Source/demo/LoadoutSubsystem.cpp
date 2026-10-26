@@ -16,14 +16,12 @@ void ULoadoutSubsystem::SetLoadoutForPlayerState(APlayerState* InPlayerState, co
 {
 	if (!IsValid(InPlayerState))
 	{
-		UE_LOG(LogShooter, Warning, TEXT("SetLoadout: InPlayerState 无效"));
 		return;
 	}
 
 	const FUniqueNetIdRepl& NetId = InPlayerState->GetUniqueId();
 	if (!NetId.IsValid())
 	{
-		UE_LOG(LogShooter, Warning, TEXT("SetLoadout: UniqueId 无效，无法作为 key"));
 		return;
 	}
 
@@ -38,29 +36,29 @@ bool ULoadoutSubsystem::GetLoadoutForPlayerState(APlayerState* InPlayerState, FS
 {
 	if (!IsValid(InPlayerState))
 	{
-		UE_LOG(LogShooter, Warning, TEXT("GetLoadout: InPlayerState 无效"));
 		return false;
 	}
 	const FUniqueNetIdRepl& NetId = InPlayerState->GetUniqueId();
 	if (!NetId.IsValid())
 	{
-		UE_LOG(LogShooter, Warning, TEXT("GetLoadout: UniqueId 无效，无法作为 key"));
 		return false;
 	}
 
 	const FString PlayerKey = NetId->ToString();
-
 	const FShooterLoadout* OutLoad = PlayerLoadoutsMap.Find(PlayerKey);
 
 	if (OutLoad)
 	{
 		OutLoadout = *OutLoad;
-		UE_LOG(LogShooter, Log, TEXT("GetLoadout: 已取 key=%s"), *PlayerKey);
+		UE_LOG(LogShooter, Log, TEXT("[LD] GetLoadout: key=%s, Primary=%s, Secondary=%s"),
+			*PlayerKey,
+			*GetNameSafe(OutLoad->PrimaryWeapon),
+			*GetNameSafe(OutLoad->SecondaryWeapon));
+
 		return true;
 	}
 	else
 	{
-		UE_LOG(LogShooter, Warning, TEXT("GetLoadout: 未找到 key=%s"), *PlayerKey);
 		return false;
 	}
 }
