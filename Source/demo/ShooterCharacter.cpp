@@ -11,6 +11,7 @@
 #include "AbilitySystemComponent.h"
 #include "ShooterPlayerController.h"
 #include "GameFramework/Controller.h"
+#include "ShooterLogChannels.h"
 #include "ShooterHUD.h"
 #include "Net/UnrealNetwork.h"
 #include "ShooterDamageGameplayAbility.h"
@@ -72,7 +73,7 @@ void AShooterCharacter::PossessedBy(AController* NewController)
 	InitAbilityActorInfo();
 	AddCharacterAbilities();
 	InitializeDefaultAttributes();
-	EquipWeapon(InitialFireAbility, InitialWeaponMesh, WeaponTipSocketName);
+	EquipWeaponFromLoadout(0);
 }
 
 void AShooterCharacter::OnRep_PlayerState()
@@ -167,20 +168,31 @@ void AShooterCharacter::EquipWeapon(TSubclassOf<UGameplayAbility> FireAbilityCla
 	EquippedFireAbilityClass = FireAbilityClass;
 
 
-	// Swap Weapon Mesh 
 	if (Weapon && NewWeaponMesh)
 	{
-		Weapon->SetSkeletalMesh(NewWeaponMesh);
-		WeaponTipSocketName = TipSocket;
+		Weapon->SetSkeletalMesh(NewWeaponMesh);   
+		ReplicatedWeaponMesh = NewWeaponMesh;      
+	}
+	WeaponTipSocketName = TipSocket;
+}
+
+void AShooterCharacter::EquipWeaponFromLoadout(int32 SlotIndex)
+{
+	if (!HasAuthority()) return;
+
+	AShooterPlayerState* ShooterPlayerState = GetPlayerState<AShooterPlayerState>();
+	if (!ShooterPlayerState) return;
+
+	const FShooterLoadout& Loadout = ShooterPlayerState->GetLoadout();
+
+	TObjectPtr<UShooterWeaponData> WeaponData =
+		(SlotIndex == 0) ? Loadout.PrimaryWeapon : Loadout.SecondaryWeapon;
+
+	if (!WeaponData)
+	{
+		UE_LOG(LogShooter, Warning, TEXT("[LD] Loadout Slot %d None"), SlotIndex);
+		return;
 	}
 
-	if (NewWeaponMesh)
-	{
-		ReplicatedWeaponMesh = NewWeaponMesh;   // Replicate to Client
-		if (Weapon)
-		{
-			Weapon->SetSkeletalMesh(NewWeaponMesh);  
-		}
-		WeaponTipSocketName = TipSocket;
-	}
+	EquipWeapon(WeaponData->FireAbilityClass, WeaponData->WeaponMesh, WeaponData->TipSocketName);
 }

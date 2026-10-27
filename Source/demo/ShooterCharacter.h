@@ -39,6 +39,8 @@ public:
 
 	void EquipWeapon(TSubclassOf<UGameplayAbility> FireAbilityClass, USkeletalMesh* NewWeaponMesh, FName TipSocket);
 
+	void EquipWeaponFromLoadout(int32 SlotIndex);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -59,11 +61,6 @@ protected:
 
 	virtual void HandleWeaponOnDeath() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
-	TSubclassOf<UGameplayAbility> InitialFireAbility;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
-	TObjectPtr<USkeletalMesh> InitialWeaponMesh;
 private:	
 	//input system
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
