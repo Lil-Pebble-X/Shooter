@@ -190,7 +190,9 @@ void AShooterCharacter::EquipWeaponFromLoadout(int32 SlotIndex)
 
 	if (!WeaponData)
 	{
-		UE_LOG(LogShooter, Warning, TEXT("[LD] Loadout Slot %d None"), SlotIndex);
+		UE_LOG(LogShooter, Error,
+			TEXT("[LD] Loadout Slot %d is empty"),
+			SlotIndex);
 		return;
 	}
 
