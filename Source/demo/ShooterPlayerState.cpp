@@ -43,7 +43,7 @@ void AShooterPlayerState::SetLoadout(const FShooterLoadout& InLoadout)
 		? GetUniqueId()->ToString()
 		: GetPlayerName();
 
-	UE_LOG(LogShooter, Log, TEXT("[LD]SetLoadout[%s]: Primary=%s, Secondary=%s"),
+	UE_LOG(LogShooter, Verbose, TEXT("[LD]SetLoadout[%s]: Primary=%s, Secondary=%s"),
 		*Key,
 		*GetNameSafe(Loadout.PrimaryWeapon),
 		*GetNameSafe(Loadout.SecondaryWeapon));
@@ -59,7 +59,7 @@ void AShooterPlayerState::OnRep_Loadout()
 		? GetUniqueId()->ToString()
 		: GetPlayerName();
 
-	UE_LOG(LogShooter, Log, TEXT("[LD]OnRep_Loadout[%s]: Primary=%s, Secondary=%s"),
+	UE_LOG(LogShooter, Verbose, TEXT("[LD]OnRep_Loadout[%s]: Primary=%s, Secondary=%s"),
 		*Key,
 		*GetNameSafe(Loadout.PrimaryWeapon),
 		*GetNameSafe(Loadout.SecondaryWeapon));
