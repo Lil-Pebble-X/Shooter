@@ -3,7 +3,7 @@
 基于 Unreal Engine 5.7 的 TPS 战斗 Demo，战斗系统全链路使用
 **Gameplay Ability System (GAS)** 实现，支持**服务器 / 客户端双端联机**。
 
-🎬 **演示视频**：[B站链接]
+🎬 **演示视频**：[https://www.bilibili.com/video/BV1xeHC6sEsK]
 📄 **开发日志**：[DEVLOG.md](DEVLOG.md)
 
 ---
