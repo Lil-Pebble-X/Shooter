@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "ShooterLoadout.h"
 #include "ShooterWeaponCatalog.generated.h"
 
 class UShooterWeaponData;
@@ -19,4 +20,7 @@ public:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TArray<TObjectPtr<UShooterWeaponData>> Weapons;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "Weapon")
+	bool TryMakeLoadout(int32 PrimaryIndex, int32 SecondaryIndex, FShooterLoadout& OutLoadout) const;
 };
