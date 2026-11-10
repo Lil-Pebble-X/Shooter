@@ -23,4 +23,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "Weapon")
 	bool TryMakeLoadout(int32 PrimaryIndex, int32 SecondaryIndex, FShooterLoadout& OutLoadout) const;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	int32 DefaultPrimaryIndex = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	int32 DefaultSecondaryIndex = 1;
 };
