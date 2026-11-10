@@ -1,4 +1,4 @@
-#include "LoadoutSubsystem.h"
+﻿#include "LoadoutSubsystem.h"
 #include "ShooterLogChannels.h"
 #include "GameFramework/PlayerState.h"
 
@@ -29,7 +29,7 @@ void ULoadoutSubsystem::SetLoadoutForPlayerState(APlayerState* InPlayerState, co
 
 	PlayerLoadoutsMap.Add(PlayerKey, InLoadout);
 
-	UE_LOG(LogShooter, Log, TEXT("SetLoadout: �Ѵ� key=%s"), *PlayerKey);
+	UE_LOG(LogShooter, Log, TEXT("SetLoadout: 已存 key=%s"), *PlayerKey);
 }
 
 bool ULoadoutSubsystem::GetLoadoutForPlayerState(APlayerState* InPlayerState, FShooterLoadout& OutLoadout) const
