@@ -1,4 +1,4 @@
-#include "ShooterWeaponCatalog.h"
+﻿#include "ShooterWeaponCatalog.h"
 #include "ShooterWeaponData.h"
 
 bool UShooterWeaponCatalog::TryMakeLoadout(int32 PrimaryIndex, int32 SecondaryIndex, FShooterLoadout& OutLoadout) const

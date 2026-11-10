@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
@@ -14,9 +14,9 @@ class DEMO_API UShooterWeaponCatalog : public UPrimaryDataAsset
 
 public:
 	/**
-	 * ¿ÉÑ¡ÎäÆ÷ÁĞ±í¡£
-	 * Ë÷Òı¼´ÎäÆ÷ ID ¡ª¡ª ServerSetLoadout µÄ RPC ²ÎÊı¾ÍÊÇÕâ¸öË÷Òı¡£
-	 * Ö»ĞíÔÚÄ©Î²×·¼Ó£¬²»ĞíÖØÅÅ¡¢²»ĞíÉ¾³ıÖĞ¼äÏî£¬·ñÔò¾É´æµµÓë RPC »á´íÎ»¡£
+	 * å¯é€‰æ­¦å™¨åˆ—è¡¨ã€‚
+	 * ç´¢å¼•å³æ­¦å™¨ ID â€”â€” ServerSetLoadout çš„ RPC å‚æ•°å°±æ˜¯è¿™ä¸ªç´¢å¼•ã€‚
+	 * åªè®¸åœ¨æœ«å°¾è¿½åŠ ï¼Œä¸è®¸é‡æ’ã€ä¸è®¸åˆ é™¤ä¸­é—´é¡¹ï¼Œå¦åˆ™æ—§å­˜æ¡£ä¸ RPC ä¼šé”™ä½ã€‚
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TArray<TObjectPtr<UShooterWeaponData>> Weapons;
