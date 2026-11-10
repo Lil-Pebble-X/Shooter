@@ -6,8 +6,6 @@
 #include "ShooterGameplayAbility.h"
 #include "GA_EquipWeaponBase.generated.h"
 
-class USkeletalMesh;
-
 /**
  * 
  */
@@ -24,15 +22,7 @@ protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
-	//Provide Fire Ability
+	//0 = Primary, 1 = Secondary
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equip")
-	TSubclassOf<UGameplayAbility> FireAbilityToEquip;
-
-	//Bind Mesh
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equip")
-	TObjectPtr<USkeletalMesh> WeaponMesh;
-
-	//Weapon Muzzle Socket Name
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equip")
-	FName WeaponTipSocket;
+	int32 SlotIndex = 0;
 };

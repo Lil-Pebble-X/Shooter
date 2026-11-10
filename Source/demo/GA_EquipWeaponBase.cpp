@@ -17,7 +17,7 @@ void UGA_EquipWeaponBase::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 	if (AShooterCharacter* Character = Cast<AShooterCharacter>(GetAvatarActorFromActorInfo()))
 	{
-		Character->EquipWeapon(FireAbilityToEquip, WeaponMesh, WeaponTipSocket);
+		Character->EquipWeaponFromLoadout(SlotIndex);
 	}
 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }
