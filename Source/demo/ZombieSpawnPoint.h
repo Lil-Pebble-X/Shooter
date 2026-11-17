@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "ZombieSpawnPoint.generated.h"
 
+class UBillboardComponent;
+
 UCLASS()
 class DEMO_API AZombieSpawnPoint : public AActor
 {
@@ -20,6 +22,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UBillboardComponent> Billboard;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USceneComponent> Root;
