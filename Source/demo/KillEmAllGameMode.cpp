@@ -6,6 +6,7 @@
 #include "GameFramework/Controller.h"
 #include "ZombieSpawnPoint.h"
 #include "TimerManager.h"
+#include "ZombieCharacter.h"
 #include "ShooterLogChannels.h"
 #include "ZombieAIController.h"
 
@@ -39,6 +40,24 @@ void AKillEmAllGameMode::BeginPlay()
 void AKillEmAllGameMode::SpawnZombies()
 {
 	UE_LOG(LogShooter, Log, TEXT("SpawnZombies tick"));
+	if (!ZombieType)
+	{
+		UE_LOG(LogShooter, Warning, TEXT("No ZombieType"));
+		return;
+	}
+	if (SpawnedCount >= MaxNum)
+	{
+		GetWorldTimerManager().ClearTimer(SpawnTimer);
+		return;
+	}
+	AZombieSpawnPoint* ZombieSpawnPoint = ZombieSpawnPoints[0];
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+	AZombieCharacter* Zombie = GetWorld()->SpawnActor<AZombieCharacter>(ZombieType, ZombieSpawnPoint->GetActorLocation(), ZombieSpawnPoint->GetActorRotation(), SpawnParams);
+	if (Zombie)
+	{
+		SpawnedCount++;
+	}
 }
 
 void AKillEmAllGameMode::EndGame(bool bIsPlayerWinner)

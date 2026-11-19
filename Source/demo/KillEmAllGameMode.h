@@ -45,4 +45,5 @@ private:
 
 	FTimerHandle SpawnTimer;
 
+	int32 SpawnedCount = 0;
 };
