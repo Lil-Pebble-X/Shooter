@@ -39,7 +39,6 @@ void AKillEmAllGameMode::BeginPlay()
 
 void AKillEmAllGameMode::SpawnZombies()
 {
-	UE_LOG(LogShooter, Log, TEXT("SpawnZombies tick"));
 	if (!ZombieType)
 	{
 		UE_LOG(LogShooter, Warning, TEXT("No ZombieType"));
@@ -50,20 +49,40 @@ void AKillEmAllGameMode::SpawnZombies()
 		GetWorldTimerManager().ClearTimer(SpawnTimer);
 		return;
 	}
-	AZombieSpawnPoint* ZombieSpawnPoint = ZombieSpawnPoints[0];
+
+	TArray<AZombieSpawnPoint*> ActivePoints;
+	for (AZombieSpawnPoint* Point : ZombieSpawnPoints)
+	{
+		if (Point && Point->IsActive())
+		{
+			ActivePoints.Add(Point);
+		}
+	}
+	if (ActivePoints.Num() <= 0)
+	{
+		UE_LOG(LogShooter, Warning, TEXT("No Active Points"));
+		return;
+	}
+
 	int32 NumToSpawn = FMath::Min(NumPerWave, MaxNum - SpawnedCount);
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
 	int32 SpawnedThisWave = 0;
+
 	for (int32 i = 0; i < NumToSpawn; i++)
 	{
-		AZombieCharacter* Zombie = GetWorld()->SpawnActor<AZombieCharacter>(ZombieType, ZombieSpawnPoint->GetActorLocation(), ZombieSpawnPoint->GetActorRotation(), SpawnParams);
+		AZombieSpawnPoint* Point = ActivePoints[(NextPointIndex + i) % ActivePoints.Num()];
+		AZombieCharacter* Zombie = GetWorld()->SpawnActor<AZombieCharacter>(ZombieType, Point->GetActorLocation(), Point->GetActorRotation(), SpawnParams);
 		if (Zombie)
 		{
 			SpawnedCount++;
 			SpawnedThisWave++;
 		}
 	}
+	NextPointIndex = (NextPointIndex + NumToSpawn) % ActivePoints.Num();
+
 	UE_LOG(LogShooter, Log, TEXT("Wave: requested %d, spawned %d, total %d/%d"), NumToSpawn, SpawnedThisWave, SpawnedCount, MaxNum);
 }
 

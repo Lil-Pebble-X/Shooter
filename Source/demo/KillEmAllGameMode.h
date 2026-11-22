@@ -46,4 +46,6 @@ private:
 	FTimerHandle SpawnTimer;
 
 	int32 SpawnedCount = 0;
+
+	int32 NextPointIndex = 0;
 };
