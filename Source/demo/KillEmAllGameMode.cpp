@@ -51,13 +51,20 @@ void AKillEmAllGameMode::SpawnZombies()
 		return;
 	}
 	AZombieSpawnPoint* ZombieSpawnPoint = ZombieSpawnPoints[0];
+	int32 NumToSpawn = FMath::Min(NumPerWave, MaxNum - SpawnedCount);
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-	AZombieCharacter* Zombie = GetWorld()->SpawnActor<AZombieCharacter>(ZombieType, ZombieSpawnPoint->GetActorLocation(), ZombieSpawnPoint->GetActorRotation(), SpawnParams);
-	if (Zombie)
+	int32 SpawnedThisWave = 0;
+	for (int32 i = 0; i < NumToSpawn; i++)
 	{
-		SpawnedCount++;
+		AZombieCharacter* Zombie = GetWorld()->SpawnActor<AZombieCharacter>(ZombieType, ZombieSpawnPoint->GetActorLocation(), ZombieSpawnPoint->GetActorRotation(), SpawnParams);
+		if (Zombie)
+		{
+			SpawnedCount++;
+			SpawnedThisWave++;
+		}
 	}
+	UE_LOG(LogShooter, Log, TEXT("Wave: requested %d, spawned %d, total %d/%d"), NumToSpawn, SpawnedThisWave, SpawnedCount, MaxNum);
 }
 
 void AKillEmAllGameMode::EndGame(bool bIsPlayerWinner)

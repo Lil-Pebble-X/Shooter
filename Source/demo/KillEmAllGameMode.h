@@ -25,13 +25,13 @@ public:
 	TSubclassOf<AZombieCharacter> ZombieType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
-	int32 MaxNum = 1;
+	int32 MaxNum = 1; // Maximum number of zombies to spawn in total
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
-	int32 NumPerWave = 1;
+	int32 NumPerWave = 1; // Number of zombies to spawn per wave
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
-	float WaveInterval = 5.0f;
+	float WaveInterval = 5.0f; // Interval between waves in seconds
 
 	UPROPERTY()
 	TArray<TObjectPtr<AZombieSpawnPoint>> ZombieSpawnPoints;
