@@ -31,6 +31,9 @@ public:
 	int32 MaxAlive = 10; // Maximum number of zombies that can be alive at the same time
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
+	int32 MaxFailedWaves = 3; // Consecutive failed waves before spawning stops
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
 	int32 NumPerWave = 1; // Number of zombies to spawn per wave
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
@@ -53,4 +56,6 @@ private:
 	int32 NextPointIndex = 0;
 
 	int32 AliveCount = 0;
+
+	int32 ConsecutiveFailedWaves = 0;
 };

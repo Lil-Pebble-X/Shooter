@@ -99,6 +99,21 @@ void AKillEmAllGameMode::SpawnZombies()
 	NextPointIndex = (NextPointIndex + NumToSpawn) % ActivePoints.Num();
 
 	UE_LOG(LogShooter, Log, TEXT("Wave: requested %d, spawned %d, total %d/%d, alive %d/%d"), NumToSpawn, SpawnedThisWave, SpawnedCount, MaxNum, AliveCount, MaxAlive);
+
+	if (SpawnedThisWave == 0)
+	{
+		ConsecutiveFailedWaves++;
+		UE_LOG(LogShooter, Log, TEXT("Consecutive failed waves: %d/%d"), ConsecutiveFailedWaves, MaxFailedWaves);
+		if (ConsecutiveFailedWaves >= MaxFailedWaves)
+		{
+			UE_LOG(LogShooter, Warning, TEXT("spawning stopped, %d consecutive failed waves, spawned %d/%d "), ConsecutiveFailedWaves, SpawnedCount, MaxNum);
+			GetWorldTimerManager().ClearTimer(SpawnTimer);
+		}
+	}
+	else
+	{
+		ConsecutiveFailedWaves = 0;
+	}
 }
 
 void AKillEmAllGameMode::EndGame(bool bIsPlayerWinner)
