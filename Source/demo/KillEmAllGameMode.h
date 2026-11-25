@@ -6,7 +6,8 @@
 #include "ShooterGameModeBase.h"
 #include "KillEmAllGameMode.generated.h"
 
-
+class AZombieCharacter;
+class AZombieSpawnPoint;
 
 /**
  * 
@@ -20,7 +21,41 @@ class DEMO_API AKillEmAllGameMode : public AShooterGameModeBase
 public:
 	virtual void PawnKilled(APawn* PawnKilled) override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
+	TSubclassOf<AZombieCharacter> ZombieType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
+	int32 MaxNum = 1; // Maximum number of zombies to spawn in total
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
+	int32 MaxAlive = 10; // Maximum number of zombies that can be alive at the same time
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
+	int32 MaxFailedWaves = 3; // Consecutive failed waves before spawning stops
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
+	int32 NumPerWave = 1; // Number of zombies to spawn per wave
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
+	float WaveInterval = 5.0f; // Interval between waves in seconds
+
+	UPROPERTY()
+	TArray<TObjectPtr<AZombieSpawnPoint>> ZombieSpawnPoints;
+
+protected:
+	virtual void BeginPlay() override;
+
+	void SpawnZombies();
 private:
 	void EndGame(bool bIsPlayerWinner);
 
+	FTimerHandle SpawnTimer;
+
+	int32 SpawnedCount = 0;
+
+	int32 NextPointIndex = 0;
+
+	int32 AliveCount = 0;
+
+	int32 ConsecutiveFailedWaves = 0;
 };
