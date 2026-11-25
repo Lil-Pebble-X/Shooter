@@ -122,6 +122,10 @@ void AZombieCharacter::InitializeDefaultAttributes() const
 
 void AZombieCharacter::Die()
 {
+	if (bDead)
+	{
+		return;
+	}
 	SetLifeSpan(LifeSpan);
 	Super::Die();
 }

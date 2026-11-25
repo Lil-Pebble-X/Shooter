@@ -8,16 +8,25 @@
 #include "TimerManager.h"
 #include "ZombieCharacter.h"
 #include "ShooterLogChannels.h"
-#include "ZombieAIController.h"
 
 void AKillEmAllGameMode::PawnKilled(APawn* PawnKilled)
 {
 	Super::PawnKilled(PawnKilled);
 
+	// T2.1: player death -> EndGame disabled, restart rules to be decided separately
+	/*
 	APlayerController* PlayerController = Cast<APlayerController>(PawnKilled->GetController());
 	if (PlayerController != nullptr)
 	{
 		EndGame(false);
+	}
+	*/
+
+	AZombieCharacter* ZombieCharacter = Cast<AZombieCharacter>(PawnKilled);
+	if (ZombieCharacter != nullptr)
+	{
+		AliveCount--;
+		UE_LOG(LogShooter, Log, TEXT("Zombie Died: alive %d/%d"), AliveCount, MaxAlive);
 	}
 }
 
@@ -64,7 +73,12 @@ void AKillEmAllGameMode::SpawnZombies()
 		return;
 	}
 
-	int32 NumToSpawn = FMath::Min(NumPerWave, MaxNum - SpawnedCount);
+	int32 NumToSpawn = FMath::Min3(NumPerWave, MaxNum - SpawnedCount, MaxAlive - AliveCount);
+	if (NumToSpawn <= 0)
+	{
+		UE_LOG(LogShooter, Log, TEXT("Alive cap reached"));
+		return;
+	}
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
@@ -78,12 +92,13 @@ void AKillEmAllGameMode::SpawnZombies()
 		if (Zombie)
 		{
 			SpawnedCount++;
+			AliveCount++;
 			SpawnedThisWave++;
 		}
 	}
 	NextPointIndex = (NextPointIndex + NumToSpawn) % ActivePoints.Num();
 
-	UE_LOG(LogShooter, Log, TEXT("Wave: requested %d, spawned %d, total %d/%d"), NumToSpawn, SpawnedThisWave, SpawnedCount, MaxNum);
+	UE_LOG(LogShooter, Log, TEXT("Wave: requested %d, spawned %d, total %d/%d, alive %d/%d"), NumToSpawn, SpawnedThisWave, SpawnedCount, MaxNum, AliveCount, MaxAlive);
 }
 
 void AKillEmAllGameMode::EndGame(bool bIsPlayerWinner)

@@ -10,6 +10,7 @@
 #include "BrainComponent.h"
 #include "ShooterGameplayTags.h"
 #include "AIController.h"
+#include "ShooterGameModeBase.h"
 #include "BaseAttributeSet.h"
 #include "Components/CapsuleComponent.h"
 
@@ -49,10 +50,20 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ABaseCharacter::Die()
 {
+	if (bDead)
+	{
+		return;
+	}
+
 	MulticastHandleDeath();
 
 	if (HasAuthority())
 	{
+		AShooterGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AShooterGameModeBase>();
+		if (GameMode)
+		{
+			GameMode->PawnKilled(this);
+		}
 		if (AbilitySystemComponent)
 		{
 			AbilitySystemComponent->CancelAllAbilities();

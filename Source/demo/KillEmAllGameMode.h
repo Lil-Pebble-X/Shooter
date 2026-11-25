@@ -28,6 +28,9 @@ public:
 	int32 MaxNum = 1; // Maximum number of zombies to spawn in total
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
+	int32 MaxAlive = 10; // Maximum number of zombies that can be alive at the same time
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
 	int32 NumPerWave = 1; // Number of zombies to spawn per wave
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawning")
@@ -37,7 +40,7 @@ public:
 	TArray<TObjectPtr<AZombieSpawnPoint>> ZombieSpawnPoints;
 
 protected:
-    virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 	void SpawnZombies();
 private:
@@ -48,4 +51,6 @@ private:
 	int32 SpawnedCount = 0;
 
 	int32 NextPointIndex = 0;
+
+	int32 AliveCount = 0;
 };
